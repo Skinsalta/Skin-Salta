@@ -809,18 +809,25 @@ var editandoPrecioId=null;
 async function cargarPrecios(){
   var data=await supa('precios_servicios?activo=eq.true&order=servicio.asc')||[];
   var c=document.getElementById('preciosList');
-  if(!data||data.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin precios cargados. Agregá el primero.</div></div>';return;}
-  c.innerHTML='<div style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
-    data.map(function(p){
-      return '<div class="fin-row" style="padding:12px 16px">'
-        +'<div class="fin-key">'+p.servicio+'</div>'
-        +'<div style="display:flex;align-items:center;gap:12px">'
-        +'<div class="fin-num" style="color:var(--gold);font-size:1rem">$'+p.precio.toLocaleString()+'</div>'
-        +'<button onclick="editarPrecio(''+p.id+'',''+p.servicio+'','+p.precio+')" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:.78rem">Editar</button>'
-        +'<button onclick="eliminarPrecio(''+p.id+'')" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:.78rem">X</button>'
-        +'</div></div>';
-    }).join('')
-    +'</div>';
+  c.innerHTML='';
+  if(!data||data.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin precios cargados.</div></div>';return;}
+  var wrap=document.createElement('div');
+  wrap.style.cssText='background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)';
+  data.forEach(function(p){
+    var row=document.createElement('div');
+    row.className='fin-row';row.style.cssText='padding:12px 16px';
+    var key=document.createElement('div');key.className='fin-key';key.textContent=p.servicio;
+    var acts=document.createElement('div');acts.style.cssText='display:flex;align-items:center;gap:12px';
+    var pval=document.createElement('div');pval.style.cssText='color:var(--gold);font-size:1rem;min-width:80px';pval.textContent='$'+p.precio.toLocaleString();
+    var be=document.createElement('button');be.textContent='Editar';be.style.cssText='background:none;border:none;color:var(--gold);cursor:pointer;font-size:.78rem';
+    be.addEventListener('click',function(){editarPrecio(p.id,p.servicio,p.precio);});
+    var bd=document.createElement('button');bd.textContent='X';bd.style.cssText='background:none;border:none;color:#c0392b;cursor:pointer;font-size:.78rem';
+    bd.addEventListener('click',function(){eliminarPrecio(p.id);});
+    acts.appendChild(pval);acts.appendChild(be);acts.appendChild(bd);
+    row.appendChild(key);row.appendChild(acts);
+    wrap.appendChild(row);
+  });
+  c.appendChild(wrap);
 }
 
 function abrirNuevoPrecio(){
