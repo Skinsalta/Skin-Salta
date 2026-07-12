@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso Lashista — Skin Salta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --k:#080808;--k2:#111;--k3:#181818;--k4:#202020;
+  --w:#fafaf8;--w2:#f0ebe3;
+  --g:#c9a264;--g2:#e0b87a;--g3:#a07840;--gd:#6a4e25;
+  --red:#c0392b;--red2:#e74c3c;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Outfit',system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--k);color:var(--w);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* TOPBAR urgencia */
+.topbar{background:var(--red);padding:.6rem 1rem;text-align:center;font-size:.8rem;font-weight:600;color:#fff;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;gap:.75rem}
+.topbar-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* NAV */
+nav{background:rgba(8,8,8,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,162,100,.12);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.nl{font-family:var(--serif);font-size:.95rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);text-decoration:none}
+.ncta{background:var(--g);color:#000;padding:.7rem 1.75rem;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:background .2s;white-space:nowrap}
+.ncta:hover{background:var(--g2)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 1.5rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% -5%,rgba(201,162,100,.22) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 20% 100%,rgba(192,57,43,.1) 0%,transparent 50%),var(--k);z-index:0}
+.hero-bg::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(201,162,100,.03) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(201,162,100,.03) 80px)}
+.hero-content{position:relative;z-index:1;max-width:900px}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,162,100,.1);border:1px solid rgba(201,162,100,.35);color:var(--g2);padding:.5rem 1.2rem;font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2rem}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--g);animation:blink 2s infinite}
+.hero h1{font-family:var(--serif);font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:.96;letter-spacing:-.03em;margin-bottom:1.5rem;color:var(--w)}
+.hero h1 em{font-style:italic;color:var(--g2);display:block}
+.hero h1 .small{font-size:clamp(1.8rem,4vw,3.5rem);display:block;color:rgba(255,255,255,.5);font-weight:400;letter-spacing:-.01em}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.5);max-width:580px;margin:0 auto 2.75rem;line-height:1.85;font-weight:300}
+.hero-sub strong{color:rgba(255,255,255,.9);font-weight:600}
+.hero-cta-group{display:flex;flex-direction:column;align-items:center;gap:.85rem;margin-bottom:3.5rem}
+.btn-main{display:inline-block;padding:1.2rem 3.5rem;background:var(--g);color:#000;font-size:.92rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .25s;box-shadow:0 0 0 0 rgba(201,162,100,.5)}
+.btn-main:hover{background:var(--g2);box-shadow:0 8px 40px rgba(201,162,100,.4);transform:translateY(-2px)}
+.btn-note{font-size:.75rem;color:rgba(255,255,255,.3);letter-spacing:.04em}
+
+/* CONTADOR */
+.counter-wrap{background:rgba(201,162,100,.07);border:1px solid rgba(201,162,100,.18);padding:1.5rem 2.5rem;display:inline-flex;align-items:center;gap:2rem;position:relative;z-index:1}
+.counter-label{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.35rem}
+.counter-nums{display:flex;gap:1rem;align-items:center}
+.cnum{text-align:center}
+.cnum-n{font-family:var(--serif);font-size:2.2rem;font-weight:900;color:var(--g2);line-height:1;min-width:2.5rem}
+.cnum-l{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.2rem}
+.csep{font-family:var(--serif);font-size:2rem;color:var(--g3);line-height:1;padding-bottom:.4rem}
+.counter-divider{width:1px;height:50px;background:rgba(201,162,100,.15)}
+.cupos-wrap{text-align:center}
+.cupos-num{font-family:var(--serif);font-size:2.8rem;font-weight:900;color:var(--red2);line-height:1}
+.cupos-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.2rem}
+
+/* URGENCIA BANDA */
+.banda{background:var(--g);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;text-align:center;overflow:hidden}
+.banda p{font-size:.88rem;font-weight:700;color:#000;letter-spacing:.04em}
+.banda-sep{width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,.3);flex-shrink:0}
+
+/* PROBLEMA */
+.prob{background:var(--k2);padding:6rem 2rem}
+.prob-inner{max-width:900px;margin:0 auto;text-align:center}
+.sec-tag{font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--g);display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem}
+.sec-tag::before,.sec-tag::after{content:'';width:20px;height:1px;background:var(--g3)}
+.sec-h{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;line-height:1.06;margin-bottom:1rem}
+.sec-h em{font-style:italic;color:var(--g2)}
+.sec-h-left{text-align:left}
+.sec-h-left.sec-h{font-size:clamp(2rem,3.5vw,3rem)}
+.prob-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,162,100,.08);margin-top:3rem}
+.prob-card{background:var(--k2);padding:2.25rem 1.75rem;border-top:3px solid var(--g3);transition:border-color .2s}
+.prob-card:hover{border-top-color:var(--g)}
+.prob-icon{font-size:2rem;margin-bottom:1rem}
+.prob-t{font-size:.95rem;font-weight:600;color:var(--w);margin-bottom:.5rem;line-height:1.4}
+.prob-d{font-size:.85rem;color:rgba(255,255,255,.38);line-height:1.8}
+
+/* GALERIA trabajos */
+.galeria{background:var(--k);padding:5rem 0}
+.galeria-header{padding:0 2rem 2.5rem;max-width:1100px;margin:0 auto}
+.galeria-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:3px}
+.galeria-item{position:relative;overflow:hidden;aspect-ratio:3/4}
+.galeria-item:first-child{grid-column:span 2;aspect-ratio:3/2}
+.galeria-img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%) brightness(.85);transition:filter .5s,transform .6s var(--ease);display:block}
+.galeria-item:hover .galeria-img{filter:grayscale(0%) brightness(1);transform:scale(1.05)}
+.galeria-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,.7) 0%,transparent 50%);opacity:0;transition:opacity .3s}
+.galeria-item:hover .galeria-overlay{opacity:1}
+.galeria-label{position:absolute;bottom:.9rem;left:1rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);opacity:0;transition:opacity .3s;font-weight:500}
+.galeria-item:hover .galeria-label{opacity:1}
+
+/* LOGRAR */
+.lograr{background:var(--k3);padding:6rem 2rem}
+.lograr-inner{max-width:1100px;margin:0 auto}
+.lograr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.05);margin-top:3rem}
+.lograr-item{background:var(--k3);padding:2rem;display:flex;gap:1.25rem;align-items:flex-start;transition:background .2s}
+.lograr-item:hover{background:var(--k4)}
+.lograr-n{font-family:var(--serif);font-size:2.8rem;font-weight:900;color:rgba(201,162,100,.15);line-height:1;flex-shrink:0;min-width:3rem}
+.lograr-t{font-size:.95rem;font-weight:600;color:var(--w);margin-bottom:.35rem;line-height:1.35}
+.lograr-d{font-size:.84rem;color:rgba(255,255,255,.38);line-height:1.75}
+
+/* INCLUYE */
+.inc{background:var(--k2);padding:6rem 2rem}
+.inc-inner{max-width:1100px;margin:0 auto}
+.inc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,162,100,.06);margin-top:3rem}
+.inc-item{background:var(--k2);padding:1.35rem 1.6rem;display:flex;gap:.85rem;align-items:flex-start;transition:background .2s}
+.inc-item:hover{background:var(--k3)}
+.inc-check{width:18px;height:18px;border:1px solid rgba(201,162,100,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.58rem;color:var(--g);margin-top:.18rem}
+.inc-t{font-size:.87rem;color:rgba(255,255,255,.62);line-height:1.55}
+
+/* BONOS */
+.bonos{background:var(--k);padding:6rem 2rem}
+.bonos-inner{max-width:820px;margin:0 auto;text-align:center}
+.bonos-pill{display:inline-block;background:rgba(201,162,100,.1);border:1px solid rgba(201,162,100,.25);color:var(--g2);padding:.45rem 1.25rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.75rem}
+.bonos-list{margin-top:2.25rem;text-align:left;display:flex;flex-direction:column;gap:.6rem}
+.bono{background:linear-gradient(135deg,rgba(201,162,100,.07) 0%,rgba(201,162,100,.03) 100%);border:1px solid rgba(201,162,100,.14);padding:1.4rem 2rem;display:grid;grid-template-columns:2.8rem 1fr auto;gap:1.25rem;align-items:center;transition:all .25s}
+.bono:hover{border-color:rgba(201,162,100,.35);transform:translateX(5px)}
+.bono-n{font-family:var(--serif);font-size:1.8rem;font-weight:900;color:rgba(201,162,100,.25);line-height:1}
+.bono-tag{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--g3);margin-bottom:.2rem}
+.bono-t{font-size:.9rem;color:var(--w);font-weight:400}
+.bono-badge{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--g);border:1px solid rgba(201,162,100,.22);padding:.2rem .65rem;white-space:nowrap}
+
+/* INSTRUCTORA */
+.inst{display:grid;grid-template-columns:1fr 1fr;min-height:70vh}
+.inst-img{position:relative;overflow:hidden}
+.inst-img img{width:100%;height:100%;min-height:560px;object-fit:cover;object-position:center 10%;filter:grayscale(8%);transition:filter .5s,transform .6s var(--ease)}
+.inst-img:hover img{filter:grayscale(0%);transform:scale(1.03)}
+.inst-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,.95) 0%,rgba(8,8,8,.2) 60%,transparent 100%)}
+.inst-q-wrap{position:absolute;bottom:2rem;left:2rem;right:2rem}
+.inst-q{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--w);line-height:1.5;margin-bottom:.4rem}
+.inst-q-by{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--g2)}
+.inst-body{background:var(--k2);padding:4rem;display:flex;flex-direction:column;justify-content:center}
+.inst-nombre{font-family:var(--serif);font-size:2.6rem;font-weight:900;line-height:1.05;margin-bottom:.25rem}
+.inst-nombre em{font-style:italic}
+.inst-rol{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--g);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.inst-rol::before{content:'';width:14px;height:1px;background:var(--g)}
+.inst-mat{display:inline-block;background:rgba(201,162,100,.08);border:1px solid rgba(201,162,100,.16);color:var(--g2);padding:.2rem .7rem;font-size:.65rem;margin-bottom:2rem}
+.inst-desc{font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.9;margin-bottom:.65rem}
+.inst-highlight{font-size:.95rem;color:rgba(255,255,255,.75);font-weight:400;line-height:1.75;margin-bottom:.65rem;padding-left:1rem;border-left:3px solid var(--g)}
+.inst-stats{display:flex;gap:2rem;padding-top:1.75rem;border-top:1px solid rgba(201,162,100,.1);margin-top:1.75rem}
+.is-n{font-family:var(--serif);font-size:1.6rem;font-weight:900;color:var(--g);line-height:1}
+.is-l{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-top:.2rem}
+
+/* PRECIO */
+.precio{background:var(--w2)}
+.precio-inner{max-width:780px;margin:0 auto;padding:6rem 2rem;text-align:center}
+.precio-inner .sec-tag{color:var(--g3)}
+.precio-inner .sec-tag::before,.precio-inner .sec-tag::after{background:var(--g3)}
+.precio-inner .sec-h{color:var(--k)}
+.precio-box{background:var(--k);margin-top:3rem;text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.p-urgencia{background:var(--red);padding:.75rem 1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.78rem;font-weight:700;color:#fff}
+.p-urgencia-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.5s infinite}
+.p-top{padding:2.5rem 3rem 2rem;border-bottom:1px solid rgba(201,162,100,.1)}
+.p-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--g3);margin-bottom:.4rem}
+.p-tachado{font-size:.9rem;color:rgba(255,255,255,.22);text-decoration:line-through}
+.p-monto{font-family:var(--serif);font-size:5rem;font-weight:900;color:var(--w);line-height:1;margin:.2rem 0 .4rem}
+.p-cuotas{font-size:.9rem;color:rgba(255,255,255,.44);line-height:1.75}
+.p-cuotas strong{color:var(--g2);font-weight:500}
+.p-mid{padding:2rem 3rem;border-bottom:1px solid rgba(201,162,100,.07)}
+.pf-grid{display:flex;flex-direction:column;gap:.6rem}
+.pf{display:flex;gap:.7rem;font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.55;align-items:flex-start}
+.pfc{width:16px;height:16px;background:rgba(201,162,100,.1);border:1px solid rgba(201,162,100,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.52rem;color:var(--g);margin-top:.18rem}
+.p-bot{padding:2.5rem 3rem}
+.pcta{display:block;text-align:center;padding:1.15rem;background:var(--g);color:#000;font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:background .25s;border:none;cursor:pointer;font-family:var(--sans);width:100%;box-shadow:0 8px 32px rgba(201,162,100,.3)}
+.pcta:hover{background:var(--g2)}
+.p-alias{margin-top:1.4rem;padding:1.4rem 1.6rem;background:rgba(201,162,100,.05);border:1px solid rgba(201,162,100,.1)}
+.pa-t{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--g);margin-bottom:.6rem}
+.pa-r{font-size:.86rem;color:rgba(255,255,255,.45);line-height:1.9}
+.pa-r strong{color:rgba(255,255,255,.8);font-weight:400}
+.p-nota{font-size:.72rem;color:rgba(255,255,255,.2);text-align:center;margin-top:.85rem;font-style:italic}
+
+/* TESTIMONIOS */
+.testi{background:var(--k2);padding:6rem 2rem}
+.testi-inner{max-width:1000px;margin:0 auto;text-align:center}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,162,100,.07);margin-top:3rem}
+.testi-card{background:var(--k2);padding:2rem;text-align:left}
+.testi-stars{color:var(--g2);font-size:.9rem;letter-spacing:.08em;margin-bottom:.85rem}
+.testi-text{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:rgba(255,255,255,.75);line-height:1.65;margin-bottom:1rem}
+.testi-name{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28)}
+
+/* FAQ */
+.faq{background:var(--k);padding:6rem 2rem}
+.faq-inner{max-width:760px;margin:0 auto}
+.faq-list{margin-top:3rem}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.055)}
+.faq-q{padding:1.1rem 0;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;cursor:pointer;font-size:.9rem;color:rgba(255,255,255,.62);font-weight:300;transition:color .2s}
+.faq-q:hover{color:var(--w)}
+.faq-arr{width:24px;height:24px;border:1px solid rgba(201,162,100,.18);display:flex;align-items:center;justify-content:center;color:var(--g3);font-size:.65rem;flex-shrink:0;transition:all .3s var(--ease)}
+.faq-item.open .faq-arr{transform:rotate(180deg);border-color:var(--g);color:var(--g)}
+.faq-a{display:none;padding-bottom:1.1rem;font-size:.85rem;color:rgba(255,255,255,.36);line-height:1.85}
+.faq-item.open .faq-a{display:block}
+
+/* CTA FINAL */
+.cta-final{padding:8rem 2rem;text-align:center;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(201,162,100,.14) 0%,transparent 65%),var(--k)}
+.cta-final h2{font-family:var(--serif);font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:.98;max-width:720px;margin:0 auto 1.1rem;letter-spacing:-.02em}
+.cta-final h2 em{font-style:italic;color:var(--g2);display:block}
+.cta-final p{font-size:.95rem;color:rgba(255,255,255,.38);max-width:400px;margin:0 auto 3rem;line-height:1.9}
+.cta-wa{display:inline-flex;align-items:center;gap:.65rem;padding:1.2rem 3rem;background:#25D366;color:#fff;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .25s;box-shadow:0 8px 28px rgba(37,211,102,.25)}
+.cta-wa:hover{background:#1ebe5a;transform:translateY(-2px);box-shadow:0 12px 36px rgba(37,211,102,.35)}
+.cta-wa svg{width:20px;height:20px;fill:#fff}
+.cta-note{margin-top:.9rem;font-size:.72rem;color:rgba(255,255,255,.2)}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:1.75rem;right:1.75rem;z-index:300;width:54px;height:54px;background:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 24px rgba(37,211,102,.35);transition:transform .2s}
+.wa-float:hover{transform:scale(1.1)}
+.wa-float svg{width:26px;height:26px;fill:#fff}
+
+footer{background:var(--k2);padding:2rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,162,100,.07);flex-wrap:wrap;gap:1rem}
+.fl{font-family:var(--serif);font-size:.88rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);text-decoration:none}
+.fl-links{display:flex;gap:1.75rem}
+.fl-link{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22);text-decoration:none;transition:color .2s}
+.fl-link:hover{color:var(--g)}
+.fc{font-size:.65rem;color:rgba(255,255,255,.15)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
+
+@media(max-width:900px){
+  .prob-cards,.lograr-grid{grid-template-columns:1fr}
+  .inst{grid-template-columns:1fr}
+  .inst-img img{min-height:300px;height:300px}
+  .inst-body{padding:2.5rem 1.5rem}
+  .testi-grid{grid-template-columns:1fr}
+  .inc-grid{grid-template-columns:1fr 1fr}
+  .p-top,.p-mid,.p-bot{padding:1.75rem 1.5rem}
+  .counter-wrap{flex-direction:column;gap:1.25rem}
+  .counter-divider{width:50px;height:1px}
+  nav{padding:.75rem 1.25rem}
+  .hero{padding:4rem 1.25rem 3rem}
+  .hero h1{font-size:clamp(2.2rem,7vw,4.5rem)}
+  .hero-sub{font-size:.92rem}
+  .bonos-inner,.faq-inner,.testi-inner,.inc-inner,.lograr-inner{padding:0 1.25rem}
+  .prob-inner{padding:0 1.25rem}
+  .precio-inner{padding:4rem 1.25rem}
+  .cta-final{padding:5rem 1.25rem}
+  .lograr-grid{gap:0}
+  .bono{padding:1.1rem 1.25rem}
+  .sec-h{font-size:clamp(1.7rem,5vw,3rem)}
+  .faq-inner{max-width:100%}
+}
+@media(max-width:560px){
+  .inc-grid{grid-template-columns:1fr}
+  .bono{grid-template-columns:auto 1fr}
+  .bono-badge{display:none}
+  .hero h1{font-size:2.4rem}
+  .banda{flex-direction:column;gap:.4rem}
+  .banda-sep{display:none}
+  nav{gap:.5rem}
+  .ncta{padding:.6rem 1.1rem;font-size:.68rem}
+  .p-monto{font-size:3.5rem}
+  .hero-cta-group{width:100%}
+  .btn-main{padding:1rem 2rem;font-size:.82rem;width:100%;text-align:center}
+  .counter-wrap{padding:1.25rem}
+  .cnum-n{font-size:1.8rem}
+  .cupos-num{font-size:2.2rem}
+  .inst-q{font-size:.9rem}
+  .testi-text{font-size:.92rem}
+  .p-top,.p-mid,.p-bot{padding:1.5rem 1.25rem}
+  .pcta{font-size:.75rem}
+  footer{flex-direction:column;gap:.75rem;text-align:center}
+  .fl-links{justify-content:center}
+  .cta-wa{padding:1rem 2rem;font-size:.78rem}
+}
+
+/* CARRUSEL */
+.carrusel-wrap{position:relative;max-width:700px;margin:2.5rem auto 0;user-select:none;padding:0 56px}
+.carrusel{overflow:hidden;width:100%;border-radius:2px}
+.carrusel-track{display:flex;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.carrusel-slide{flex:0 0 100%;position:relative}
+.carrusel-slide img{width:100%;height:520px;object-fit:cover;object-position:center 20%;display:block;filter:grayscale(8%)}
+.carrusel-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(8,8,8,.88) 0%,transparent 100%);padding:1.5rem 1.5rem .9rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.75);font-weight:500}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(8,8,8,.8);border:1px solid rgba(201,162,100,.3);color:var(--g2);width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .2s;z-index:10;backdrop-filter:blur(8px)}
+.car-btn:hover{background:var(--g);color:#000;border-color:var(--g)}
+.car-prev{left:0}
+.car-next{right:0}
+.car-dots{display:flex;gap:.5rem;justify-content:center;margin-top:1.1rem}
+.car-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s}
+.car-dot.a{background:var(--g);width:20px;border-radius:3px}
+@media(max-width:900px){.carrusel-wrap{padding:0 48px}.carrusel-slide img{height:400px}}
+@media(max-width:560px){.carrusel-wrap{padding:0 40px}.carrusel-slide img{height:280px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-dot"></div>
+  Inicio 6 de Julio &mdash; <strong>Solo 6 cupos disponibles.</strong> Cuando se llenan, cerramos.
+  <div class="topbar-dot"></div>
+</div>
+
+<nav>
+  <a class="nl" href="/">&#8592; Skin Salta</a>
+  <a class="ncta" href="#precio">Reservar mi lugar</a>
+  <a href="aula" style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;padding:.55rem 1rem;border:1px solid rgba(255,255,255,.15);transition:all .2s" onmouseover="this.style.borderColor='#b8956a';this.style.color='#c9a97d'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.5)'">Ya soy alumna</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge rv">Curso presencial &mdash; Salta Capital &mdash; Julio 2026</div>
+    <h1 class="rv d1">
+      <span class="small">Conviertete en</span>
+      Lashista<br>Profesional
+      <em>en 5 semanas.</em>
+    </h1>
+    <p class="hero-sub rv d2">
+      Aprendés la <strong>Técnica Clásica Pelo por Pelo</strong> con práctica real en modelos,
+      materiales incluidos y <strong>todo lo que necesitás para empezar a cobrar</strong>
+      desde la primera semana de finalizar el curso.
+    </p>
+    <div class="hero-cta-group rv d3">
+      <a class="btn-main" href="#precio">Quiero reservar mi lugar ahora</a>
+      <span class="btn-note">Seña de solo $60.000 &middot; Resto el día de inicio &middot; Cupos limitados</span>
+    </div>
+    <div class="counter-wrap rv d4">
+      <div>
+        <div class="counter-label">El curso empieza en</div>
+        <div class="counter-nums">
+          <div class="cnum"><div class="cnum-n" id="cd">00</div><div class="cnum-l">Días</div></div>
+          <div class="csep">:</div>
+          <div class="cnum"><div class="cnum-n" id="ch">00</div><div class="cnum-l">Horas</div></div>
+          <div class="csep">:</div>
+          <div class="cnum"><div class="cnum-n" id="cm">00</div><div class="cnum-l">Min</div></div>
+        </div>
+      </div>
+      <div class="counter-divider"></div>
+      <div class="cupos-wrap">
+        <div class="cupos-num">6</div>
+        <div class="cupos-label">Cupos totales</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BANDA -->
+<div class="banda">
+  <p>&#9733; 10 clases presenciales</p>
+  <div class="banda-sep"></div>
+  <p>&#9733; Materiales incluidos</p>
+  <div class="banda-sep"></div>
+  <p>&#9733; Certificado incluido</p>
+  <div class="banda-sep"></div>
+  <p>&#9733; 5 bonos de regalo</p>
+  <div class="banda-sep"></div>
+  <p>&#9733; Grupos de 6 personas</p>
+</div>
+
+<!-- PROBLEMA -->
+<section class="prob">
+  <div class="prob-inner">
+    <div class="sec-tag rv">¿Te identificás?</div>
+    <div class="sec-h rv d1">Si pensaste alguna vez <em>"quiero hacer algo propio"</em> — este curso es para vos.</div>
+    <div class="prob-cards">
+      <div class="prob-card rv d1">
+        <div class="prob-icon">&#128172;</div>
+        <div class="prob-t">"Quiero un ingreso propio pero no sé por dónde empezar"</div>
+        <div class="prob-d">Las extensiones son uno de los servicios más demandados. Con este oficio podés trabajar desde tu casa, a tu horario, con tu precio.</div>
+      </div>
+      <div class="prob-card rv d2">
+        <div class="prob-icon">&#128373;&#65039;</div>
+        <div class="prob-t">"Tengo turno fijo y quiero ser independiente"</div>
+        <div class="prob-d">Lashistas que trabajan 4 horas al día ganan más que en un trabajo de 8 horas. La independencia económica empieza con una habilidad real.</div>
+      </div>
+      <div class="prob-card rv d3">
+        <div class="prob-icon">&#128293;</div>
+        <div class="prob-t">"Hice otro curso pero no consigo clientas"</div>
+        <div class="prob-d">Acá aprendés técnica Y negocio. Redes sociales, cómo fotografiar tus trabajos, cómo fijar precios. Todo junto en un solo curso.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA trabajos reales -->
+<section class="galeria">
+  <div class="galeria-header">
+    <div class="sec-tag rv">Resultados reales</div>
+    <div class="sec-h rv d1" style="max-width:700px">Estos son los trabajos que vas a poder <em>hacer al terminar.</em></div>
+  </div>
+  <!-- CARRUSEL -->
+  <div class="carrusel-wrap rv d2">
+    <div class="carrusel" id="carrusel">
+      <div class="carrusel-track" id="track">
+        <div class="carrusel-slide"><img src="imagenes/pelo-por-pelo.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+        <div class="carrusel-slide"><img src="imagenes/pelo-por-pelo-2.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+        <div class="carrusel-slide"><img src="clasica-ojo-verde.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+        <div class="carrusel-slide"><img src="clasica-ojo-marron.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+        <div class="carrusel-slide"><img src="clasica-ojo-azul.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+        <div class="carrusel-slide"><img src="clasica-ojo-negro.jpg" alt="Técnica clásica"><div class="carrusel-caption">Técnica clásica pelo por pelo</div></div>
+      </div>
+    </div>
+    <button class="car-btn car-prev" onclick="carMove(-1)">&#8592;</button>
+    <button class="car-btn car-next" onclick="carMove(1)">&#8594;</button>
+    <div class="car-dots" id="carDots"></div>
+  </div>
+</section>
+
+<!-- QUE VAS A LOGRAR -->
+<section class="lograr">
+  <div class="lograr-inner">
+    <div class="sec-tag rv">Al terminar</div>
+    <div class="sec-h rv d1 sec-h-left">Vas a poder hacer <em>todo esto:</em></div>
+    <div class="lograr-grid rv d2">
+      <div class="lograr-item"><div class="lograr-n">01</div><div><div class="lograr-t">Aplicar extensiones clásicas de manera profesional</div><div class="lograr-d">Técnica correcta, adhesivo justo y tiempos de trabajo que garantizan duración y calidad en cada trabajo.</div></div></div>
+      <div class="lograr-item"><div class="lograr-n">02</div><div><div class="lograr-t">Diseñar el mapping correcto para cada rostro</div><div class="lograr-d">Curvas, largos y grosores según la morfología de cada clienta para un resultado que la haga volver.</div></div></div>
+      <div class="lograr-item"><div class="lograr-n">03</div><div><div class="lograr-t">Sacar fotos de tus trabajos que venden solas</div><div class="lograr-d">Iluminación, ángulos y edición básica para que tus trabajos se vean tan bien como los que más likes tienen.</div></div></div>
+      <div class="lograr-item"><div class="lograr-n">04</div><div><div class="lograr-t">Poner precios correctos y cobrarlos sin culpa</div><div class="lograr-d">Calculás tus insumos, definís tu tarifa y aprendés a cobrar seña para que ninguna clienta te deje plantada.</div></div></div>
+      <div class="lograr-item"><div class="lograr-n">05</div><div><div class="lograr-t">Trabajar de forma segura y profesional</div><div class="lograr-d">Bioseguridad, manejo de alergias, contraindicaciones. Todo para trabajar con confianza desde el primer día.</div></div></div>
+      <div class="lograr-item"><div class="lograr-n">06</div><div><div class="lograr-t">Tener la base para crecer y especializarte</div><div class="lograr-d">Quien domina la clásica tiene el camino abierto para aprender volúmenes, lifting y todo lo que viene después.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUE INCLUYE -->
+<section class="inc">
+  <div class="inc-inner">
+    <div class="sec-tag rv">Sin costos ocultos</div>
+    <div class="sec-h rv d1 sec-h-left">Todo incluido. <em>Un solo precio.</em></div>
+    <p style="font-size:.88rem;color:rgba(255,255,255,.36);max-width:480px;margin:.6rem 0 0;line-height:1.85" class="rv d2">Sin extras sorpresa. Lo que pagás es lo que recibís desde el primer día.</p>
+    <div class="inc-grid rv d2">
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Materiales profesionales para cada clase</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Kit de regalo para practicar en casa</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Certificado de asistencia impreso</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Cartilla de teoría completa impresa</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Coffee break en cada clase</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Asesoramiento personalizado post-curso</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">6 fichas de mapping para practicar</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Checklist profesional para modelos</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Tabla de seguimiento de prácticas</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Registro antes y después de cada trabajo</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">10 tips profesionales exclusivos</div></div>
+      <div class="inc-item"><div class="inc-check">&#10003;</div><div class="inc-t">Grupo privado de seguimiento por WhatsApp</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BONOS -->
+<section class="bonos">
+  <div class="bonos-inner">
+    <div class="bonos-pill">&#127381; 5 Bonos de acción rápida &mdash; Solo para quien reserva</div>
+    <div class="sec-h rv">Para que sea <em>imposible que te vaya mal.</em></div>
+    <p style="font-size:.9rem;color:rgba(255,255,255,.4);max-width:500px;margin:.6rem auto 0;line-height:1.85" class="rv d1">Al inscribirte, estos 5 bonos son tuyos sin costo extra. Exclusivos para alumnas del curso.</p>
+    <div class="bonos-list rv d2">
+      <div class="bono"><div class="bono-n">01</div><div><div class="bono-tag">Bono 1</div><div class="bono-t">Guía completa de Bioseguridad e Higiene profesional</div></div><div class="bono-badge">Gratis</div></div>
+      <div class="bono"><div class="bono-n">02</div><div><div class="bono-tag">Bono 2</div><div class="bono-t">Masterclass: "Cómo vender tus servicios de estética"</div></div><div class="bono-badge">Gratis</div></div>
+      <div class="bono"><div class="bono-n">03</div><div><div class="bono-tag">Bono 3</div><div class="bono-t">100 plantillas editables de Instagram para atraer clientas</div></div><div class="bono-badge">Gratis</div></div>
+      <div class="bono"><div class="bono-n">04</div><div><div class="bono-tag">Bono 4</div><div class="bono-t">Calculadora: cómo tarifar según tus insumos y zona</div></div><div class="bono-badge">Gratis</div></div>
+      <div class="bono"><div class="bono-n">05</div><div><div class="bono-tag">Bono 5</div><div class="bono-t">Biblioteca "Lashista Pro": manuales técnicos y tutoriales</div></div><div class="bono-badge">Gratis</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTORA -->
+<section class="inst">
+  <div class="inst-img">
+    <img src="imagenes/celeste.jpg" alt="Celeste Guzmán">
+    <div class="inst-grad"></div>
+    <div class="inst-q-wrap">
+      <div class="inst-q">"Enseño todo lo que me hubiera gustado saber cuando empecé. Sin vueltas y sin secretos."</div>
+      <div class="inst-q-by">Celeste Guzmán</div>
+    </div>
+  </div>
+  <div class="inst-body rv">
+    <div class="inst-rol">Quién te enseña</div>
+    <div class="inst-nombre">Celeste <em>Guzmán</em></div>
+    <div class="inst-mat">Mat. N° 21482</div>
+    <p class="inst-desc">Licenciada en Comercialización, Cosmetóloga profesional y Lashista profesional certificada con más de 5 años de experiencia. Especialista en extensiones de pestañas y tratamientos faciales avanzados.</p>
+    <p class="inst-desc">Fundadora de Skin Salta, uno de los espacios de estética más reconocidos de Salta Capital.</p>
+    <div class="inst-highlight">"Más de 500 clientas atendidas, protocolo propio de trabajo y una filosofía clara: <em>quien aprende bien, trabaja bien.</em>"</div>
+    <div class="inst-stats">
+      <div><div class="is-n">5+</div><div class="is-l">Años exp.</div></div>
+      <div><div class="is-n">500+</div><div class="is-l">Clientas</div></div>
+      <div><div class="is-n">100%</div><div class="is-l">Presencial</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIO -->
+<section class="precio" id="precio">
+  <div class="precio-inner">
+    <div class="sec-tag">Inversión</div>
+    <div class="sec-h">Reservá tu <em>lugar ahora</em></div>
+    <p style="font-size:.9rem;color:#555;max-width:440px;margin:.6rem auto 0;line-height:1.85">Solo 6 cupos por grupo. Una vez que se llenan, cerramos sin lista de espera.</p>
+    <div class="precio-box rv">
+      <div class="p-urgencia">
+        <div class="p-urgencia-dot"></div>
+        Solo 6 cupos &mdash; Inicio 6 de Julio &mdash; Cerramos cuando se llenen
+      </div>
+      <div class="p-top">
+        <div class="p-label">Precio del curso completo</div>
+        <div class="p-tachado">Valor de referencia $170.000</div>
+        <div class="p-monto">$150.000</div>
+        <div class="p-cuotas">Reservá con solo <strong>$60.000 de seña</strong><br>Pagás los <strong>$90.000 restantes</strong> el primer día del curso</div>
+      </div>
+      <div class="p-mid">
+        <div class="pf-grid">
+          <div class="pf"><div class="pfc">&#10003;</div>10 clases presenciales &mdash; Lun y Mié 14:00 a 16:00 hs</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Todos los materiales profesionales incluidos</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Kit de regalo para practicar en casa</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Certificado de asistencia impreso</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Coffee break en cada encuentro</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Asesoramiento personalizado post-curso</div>
+          <div class="pf"><div class="pfc">&#10003;</div>5 bonos exclusivos de acción rápida</div>
+          <div class="pf"><div class="pfc">&#10003;</div>Grupo de solo 6 personas &mdash; atención 100% personalizada</div>
+        </div>
+      </div>
+      <div class="p-bot">
+        <a href="https://wa.me/543872246068?text=Hola!+Quiero+reservar+mi+lugar+en+el+curso+de+extensiones+de+julio.+Me+pasan+los+datos+para+la+sena?+Gracias!" target="_blank" class="pcta">&#128241; Reservar mi lugar por WhatsApp</a>
+        <div class="p-alias">
+          <div class="pa-t">Datos para transferir la seña</div>
+          <div class="pa-r">
+            <strong>Alias:</strong> celeguzman1<br>
+            <strong>Nombre:</strong> Celeste Jimena Guzmán<br>
+            <strong>Seña para reservar:</strong> $60.000<br><br>
+            También podés reservar presencialmente en el salón.<br>
+            <strong>Dirección:</strong> 20 de Febrero 1124, Salta Capital
+          </div>
+        </div>
+        <p class="p-nota">La seña no es reembolsable &middot; Después de transferir, enviá el comprobante por WhatsApp para confirmar tu lugar</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="testi">
+  <div class="testi-inner">
+    <div class="sec-tag rv">Alumnas que pasaron por el curso</div>
+    <div class="sec-h rv d1">Resultados <em>reales</em></div>
+    <div class="testi-grid rv d2">
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testi-text">"Salí del curso y en dos semanas ya tenía mis primeras clientas. La atención es increíble, aprendés de verdad y salís lista para trabajar."</div>
+        <div class="testi-name">Valentina R. &mdash; Alumna 2025</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testi-text">"Lo mejor fue aprender también la parte del negocio. Cómo cobrar, cómo publicar en redes. Eso no lo enseñan en ningún curso de Salta."</div>
+        <div class="testi-name">Micaela L. &mdash; Alumna 2025</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testi-text">"Celeste explica todo con una paciencia y dedicación que no esperaba. En 5 semanas logré una técnica que no creía posible para mí."</div>
+        <div class="testi-name">Rocío M. &mdash; Alumna 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="sec-tag rv">Dudas frecuentes</div>
+    <div class="sec-h rv d1">Todo lo que <em>querés saber</em></div>
+    <div class="faq-list rv d2">
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Necesito experiencia previa?<div class="faq-arr">&#9660;</div></div><div class="faq-a">No. El curso está diseñado para arrancar desde cero. Si nunca tocaste una pestaña, es exactamente para vos. Empezamos por los fundamentos y avanzamos de forma progresiva.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Los materiales están incluidos de verdad?<div class="faq-arr">&#9660;</div></div><div class="faq-a">Sí, 100%. Todo lo que usás en las clases está incluido en el precio. Además te llevás un kit de regalo para seguir practicando en casa sin comprar nada extra.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Qué pasa si falto a una clase?<div class="faq-arr">&#9660;</div></div><div class="faq-a">Al ser grupos de solo 6 personas, somos flexibles. Coordinamos para recuperar el contenido. Lo importante es que avisés con anticipación.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Cuándo puedo empezar a cobrar por mis trabajos?<div class="faq-arr">&#9660;</div></div><div class="faq-a">Muchas alumnas empiezan a atender clientas durante el mismo curso. Al terminar, tenés todo para armar tu agenda y cobrar desde la primera clienta.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Cómo confirmo mi lugar?<div class="faq-arr">&#9660;</div></div><div class="faq-a">Transferís los $60.000 de seña al alias celeguzman1 (Celeste Jimena Guzmán) y mandás el comprobante por WhatsApp. Tu lugar queda confirmado al instante.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)">¿Puedo pagar todo el curso junto?<div class="faq-arr">&#9660;</div></div><div class="faq-a">Sí. Podés pagar los $150.000 completos al reservar, o hacer la seña de $60.000 y los $90.000 el primer día de clase. Como te quede mejor.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="rv">Tu futuro como lashista<br><em>empieza el 6 de julio.</em></h2>
+  <p class="rv d1">6 cupos. Cuando se llenan, cerramos. Sin lista de espera.</p>
+  <div class="rv d2">
+    <a href="https://wa.me/543872246068?text=Hola!+Quiero+reservar+mi+lugar+en+el+curso+de+extensiones+de+julio.+Me+pasan+los+datos+para+la+sena?+Gracias!" target="_blank" class="cta-wa">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Reservar mi lugar ahora
+    </a>
+    <div class="cta-note">Seña de $60.000 &middot; Respondemos en menos de 2 horas</div>
+  </div>
+</section>
+
+<footer>
+  <a class="fl" href="/">Skin Salta</a>
+  <div class="fl-links">
+    <a class="fl-link" href="/#servicios">Servicios</a>
+    <a class="fl-link" href="/#agenda">Turnos</a>
+    <a class="fl-link" href="https://instagram.com/skin.salta" target="_blank">Instagram</a>
+  </div>
+  <div class="fc">&copy; 2026 Skin Salta &middot; Salta Capital</div>
+</footer>
+
+<a href="https://wa.me/543872246068" target="_blank" class="wa-float">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<script>
+// Reveal
+function rv(){var e=document.querySelectorAll('.rv');for(var i=0;i<e.length;i++){if(e[i].getBoundingClientRect().top<window.innerHeight-40)e[i].classList.add('in');}}
+window.addEventListener('scroll',rv,{passive:true});
+window.addEventListener('load',rv);
+
+// Contador regresivo hasta 6 de julio 2026
+function updateCounter(){
+  var target=new Date('2026-07-06T14:00:00-03:00');
+  var now=new Date();
+  var diff=target-now;
+  if(diff<=0){document.getElementById('cd').textContent='00';document.getElementById('ch').textContent='00';document.getElementById('cm').textContent='00';return;}
+  var d=Math.floor(diff/86400000);
+  var h=Math.floor((diff%86400000)/3600000);
+  var m=Math.floor((diff%3600000)/60000);
+  document.getElementById('cd').textContent=String(d).padStart(2,'0');
+  document.getElementById('ch').textContent=String(h).padStart(2,'0');
+  document.getElementById('cm').textContent=String(m).padStart(2,'0');
+}
+updateCounter();
+setInterval(updateCounter,30000);
+
+// FAQ
+function faq(el){var it=el.parentElement,was=it.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open');});if(!was)it.classList.add('open');}
+
+// Carrusel
+(function(){
+  var total=6, cur=0;
+  var track=document.getElementById('track');
+  var dotsWrap=document.getElementById('carDots');
+  if(!track||!dotsWrap)return;
+  // Crear dots
+  for(var i=0;i<total;i++){
+    var d=document.createElement('div');
+    d.className='car-dot'+(i===0?' a':'');
+    (function(idx){d.onclick=function(){goTo(idx);};})(i);
+    dotsWrap.appendChild(d);
+  }
+  function goTo(n){
+    cur=n;
+    track.style.transform='translateX(-'+cur+'00%)';
+    document.querySelectorAll('.car-dot').forEach(function(d,i){d.classList.toggle('a',i===cur);});
+  }
+  window.carMove=function(dir){
+    var next=(cur+dir+total)%total;
+    goTo(next);
+  };
+  // Auto-avanzar cada 3.5s
+  setInterval(function(){window.carMove(1);},3500);
+})();
+</script>
+</body>
+</html>

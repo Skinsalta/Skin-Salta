@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a1a">
+<title>Skin Salta — Panel Profesional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --blk:#1a1a1a;--w:#fff;--w2:#fafaf8;--w3:#f5f2ee;--w4:#ece8e2;
+  --gold:#b8956a;--green:#2d7a2d;--red:#c0392b;--blue:#2980b9;
+  --text:#1a1a1a;--muted:#888;--light:#bbb;
+  --serif:'Playfair Display',serif;--sans:'Outfit',system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:300;color:var(--text);-webkit-font-smoothing:antialiased}
+
+/* LOGIN */
+#scrLogin{position:fixed;inset:0;background:var(--blk);display:flex;flex-direction:column;justify-content:flex-end;z-index:100}
+#scrLogin.hidden{display:none}
+.login-bg{position:absolute;inset:0;background:url('imagenes/pelo-por-pelo.jpg') center/cover;opacity:.2}
+.login-content{position:relative;z-index:1;padding:32px 28px 48px;max-width:440px;width:100%}
+.login-logo{width:120px;margin-bottom:20px}
+.login-titulo{font-family:var(--serif);font-size:1.8rem;color:#fff;margin-bottom:6px}
+.login-sub{font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:28px}
+.login-label{font-size:.65rem;letter-spacing:.18em;color:var(--gold);margin-bottom:6px;text-transform:uppercase;font-weight:600}
+.login-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:var(--sans);font-size:16px;padding:13px 16px;margin-bottom:12px;outline:none;border-radius:0}
+.login-input:focus{border-color:var(--gold)}
+.login-input::placeholder{color:rgba(255,255,255,.25)}
+.login-btn{width:100%;background:var(--gold);color:var(--blk);border:none;padding:15px;font-family:var(--sans);font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:4px}
+.login-err{font-size:.8rem;color:#ff6b6b;margin-top:8px;display:none}
+
+/* LAYOUT PRINCIPAL */
+#appLayout{display:none;height:100vh;overflow:hidden}
+#appLayout.visible{display:flex}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--blk);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-top{padding:28px 20px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-logo{width:100px;margin-bottom:12px;opacity:.9}
+.sidebar-user{font-size:.75rem;color:rgba(255,255,255,.4);letter-spacing:.05em}
+.sidebar-nombre{font-size:1rem;color:#fff;font-weight:400;margin-top:2px}
+.sidebar-rol{display:inline-block;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;margin-top:6px;background:rgba(184,149,106,.2);color:var(--gold);border:1px solid rgba(184,149,106,.3)}
+.sidebar-nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;color:rgba(255,255,255,.4);font-size:.85rem;letter-spacing:.02em}
+.nav-item:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.04)}
+.nav-item.activo{color:#fff;border-left-color:var(--gold);background:rgba(184,149,106,.08)}
+.nav-item .badge{background:var(--gold);color:#000;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700;margin-left:auto}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.salir-btn{font-size:.75rem;color:rgba(255,255,255,.3);cursor:pointer;letter-spacing:.05em}
+.salir-btn:hover{color:rgba(255,255,255,.6)}
+
+/* CONTENIDO */
+.main-content{flex:1;overflow-y:auto;background:var(--w2)}
+.page{display:none;padding:28px;min-height:100%}
+.page.activa{display:block}
+.page-header{margin-bottom:24px}
+.page-titulo{font-family:var(--serif);font-size:1.8rem;color:var(--blk);font-weight:400}
+.page-sub{font-size:.85rem;color:var(--muted);margin-top:4px}
+
+/* CARDS */
+.cards-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.stat-card{flex:1;min-width:140px;background:#fff;padding:16px;border-top:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat-label{font-size:.62rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-family:var(--serif);font-size:1.8rem;color:var(--blk)}
+
+/* TURNOS */
+.turno-card{background:#fff;display:flex;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);overflow:hidden}
+.turno-accent{width:4px;flex-shrink:0}
+.turno-body{flex:1;padding:14px 16px}
+.turno-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.turno-hora{font-size:1rem;font-weight:600;color:var(--blk)}
+.turno-badge{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;font-weight:600;border-radius:2px}
+.turno-servicio{font-size:.95rem;color:var(--blk);margin-bottom:3px}
+.turno-cliente{font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.turno-esp{font-size:.75rem;color:var(--light)}
+.turno-acciones{display:flex;gap:8px;margin-top:12px}
+.btn-confirmar{flex:1;background:var(--blk);color:#fff;border:none;padding:9px;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:var(--sans)}
+.btn-confirmar:hover{background:var(--green)}
+.btn-rechazar{flex:1;background:transparent;color:var(--muted);border:1px solid var(--w4);padding:9px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:var(--sans)}
+.btn-rechazar:hover{border-color:var(--red);color:var(--red)}
+
+/* CALENDARIO */
+.cal-wrap{background:#fff;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cal-nav-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--blk);padding:4px 8px}
+.cal-mes-label{font-size:1rem;color:var(--blk);font-weight:500}
+.cal-semana{display:flex;margin-bottom:6px}
+.cal-dia-label{flex:1;text-align:center;font-size:.65rem;color:var(--light);letter-spacing:.08em;text-transform:uppercase}
+.cal-grid{display:flex;flex-wrap:wrap}
+.cal-celda{width:14.28%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:.85rem;color:var(--blk)}
+.cal-celda:hover{background:var(--w3)}
+.cal-celda.selec{background:var(--blk);color:#fff;font-weight:700}
+.cal-celda.hoy:not(.selec){border:1.5px solid var(--gold);color:var(--gold);font-weight:600}
+.cal-celda.pasado{opacity:.25;cursor:default}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);position:absolute;bottom:4px;left:50%;transform:translateX(-50%)}
+.cal-celda.selec .cal-dot{background:#fff}
+
+/* FILTRO FECHAS */
+.filtro-bar{display:flex;gap:8px;margin-bottom:16px}
+.filtro-btn{flex:1;padding:8px;border:1px solid var(--w4);background:#fff;font-size:.72rem;color:var(--muted);cursor:pointer;font-family:var(--sans);letter-spacing:.05em}
+.filtro-btn.activo{background:var(--blk);color:#fff;border-color:var(--blk)}
+
+/* CLIENTAS */
+.clienta-item{background:#fff;padding:14px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.clienta-item:hover{background:var(--w3)}
+.clienta-avatar{width:40px;height:40px;border-radius:20px;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;background:var(--w3);font-size:1.1rem;color:var(--gold);flex-shrink:0}
+.clienta-nombre{font-size:.95rem;color:var(--blk);margin-bottom:2px}
+.clienta-info{font-size:.75rem;color:var(--muted)}
+
+/* SEARCH */
+.search-input{width:100%;padding:11px 16px;border:1px solid var(--w4);background:#fff;font-family:var(--sans);font-size:14px;color:var(--blk);outline:none;margin-bottom:12px}
+.search-input:focus{border-color:var(--gold)}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-label{font-size:.62rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;display:block;font-weight:600}
+.form-input{width:100%;padding:10px 14px;border:1px solid var(--w4);background:#fff;font-family:var(--sans);font-size:14px;color:var(--blk);outline:none;border-radius:0}
+.form-input:focus{border-color:var(--gold)}
+.form-select{width:100%;padding:10px 14px;border:1px solid var(--w4);background:#fff;font-family:var(--sans);font-size:14px;color:var(--blk);outline:none;-webkit-appearance:none}
+.btn-primary{background:var(--blk);color:#fff;border:none;padding:12px 24px;font-family:var(--sans);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.btn-primary:hover{background:var(--gold);color:#000}
+
+/* PANEL FINANZAS */
+.fin-card{background:#fff;padding:16px;border-top:3px solid var(--gold);margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.fin-label{font-size:.62rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.fin-val{font-family:var(--serif);font-size:1.6rem;color:var(--blk)}
+.fin-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--w4)}
+.fin-key{font-size:.85rem;color:var(--muted)}
+.fin-num{font-size:.9rem;color:var(--blk);font-weight:500}
+
+/* MOBILE */
+.mobile-nav{display:none;background:var(--blk);position:fixed;bottom:0;left:0;right:0;z-index:50;padding:8px 0 max(8px,env(safe-area-inset-bottom))}
+.mobile-nav-items{display:flex;justify-content:space-around}
+.mobile-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 12px;color:rgba(255,255,255,.35);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;font-family:var(--sans)}
+.mobile-nav-item.activo{color:var(--gold)}
+.mobile-nav-icon{font-size:1.2rem}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px;color:var(--light)}
+.empty-ico{font-size:2rem;margin-bottom:10px}
+.empty-txt{font-size:.9rem;line-height:1.6}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;padding:20px;overflow-y:auto}
+.modal-overlay.open{display:flex;align-items:center;justify-content:center}
+.modal-box{background:#fff;width:100%;max-width:500px;padding:28px}
+.modal-titulo{font-family:var(--serif);font-size:1.3rem;color:var(--blk);margin-bottom:20px}
+.modal-close{float:right;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);margin-top:-4px}
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .mobile-nav{display:block}
+  .main-content{padding-bottom:70px}
+  .page{padding:16px}
+  .cards-row{gap:8px}
+}
+@media(min-width:901px){
+  .mobile-nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="scrLogin">
+  <div class="login-bg"></div>
+  <div class="login-content">
+    <img src="logo.png" class="login-logo" alt="Skin Salta">
+    <h1 class="login-titulo">Panel Profesional</h1>
+    <p class="login-sub">Acceso exclusivo para el equipo de Skin Salta</p>
+    <div class="login-label">Email</div>
+    <input type="email" class="login-input" id="loginEmail" placeholder="tu@email.com" autocomplete="email">
+    <div class="login-label">Contraseña</div>
+    <input type="password" class="login-input" id="loginPass" placeholder="Tu contraseña">
+    <div class="login-err" id="loginErr">Email o contraseña incorrectos</div>
+    <button class="login-btn" onclick="handleLogin()">Ingresar al panel</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appLayout">
+  <!-- SIDEBAR (desktop) -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <img src="logo.png" class="sidebar-logo" alt="Skin Salta">
+      <div class="sidebar-user">Bienvenida</div>
+      <div class="sidebar-nombre" id="sideNombre">—</div>
+      <span class="sidebar-rol" id="sideRol">—</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item activo" onclick="irA('hoy')">&#128197; Hoy</div>
+      <div class="nav-item" onclick="irA('agenda')">&#128336; Agenda</div>
+      <div class="nav-item" onclick="irA('solicitudes')">&#9997; Solicitudes <span class="badge" id="badgeSol" style="display:none">0</span></div>
+      <div class="nav-item" onclick="irA('clientas')">&#128100; Clientas</div>
+      <div class="nav-item" id="navFinanzas" onclick="irA('finanzas')" style="display:none">&#128200; Finanzas</div>
+      <div class="nav-item" id="navPrecios" onclick="irA('precios')" style="display:none">&#128176; Precios</div>
+      <div class="nav-item" id="navProductos" onclick="irA('productos')" style="display:none">&#128230; Productos</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="salir-btn" onclick="cerrarSesion()">Cerrar sesión</div>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="main-content">
+
+    <!-- HOY -->
+    <div class="page activa" id="pageHoy">
+      <div class="page-header">
+        <div class="page-titulo">Hoy</div>
+        <div class="page-sub" id="fechaHoyLabel"></div>
+      </div>
+      <div class="cards-row" id="statsHoy"></div>
+      <div id="turnosHoyList"></div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="page" id="pageAgenda">
+      <div class="page-header">
+        <div class="page-titulo">Agenda</div>
+      </div>
+      <div class="cal-wrap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="cambiarMes(-1)">&#8249;</button>
+          <span class="cal-mes-label" id="calMesLabel"></span>
+          <button class="cal-nav-btn" onclick="cambiarMes(1)">&#8250;</button>
+        </div>
+        <div class="cal-semana">
+          <div class="cal-dia-label">Dom</div><div class="cal-dia-label">Lun</div>
+          <div class="cal-dia-label">Mar</div><div class="cal-dia-label">Mie</div>
+          <div class="cal-dia-label">Jue</div><div class="cal-dia-label">Vie</div>
+          <div class="cal-dia-label">Sab</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div id="turnosAgendaList"></div>
+    </div>
+
+    <!-- SOLICITUDES -->
+    <div class="page" id="pageSolicitudes">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="page-titulo">Solicitudes</div>
+          <div class="page-sub">Pendientes de confirmación</div>
+        </div>
+        <button class="btn-primary" onclick="abrirNuevaSolicitud()">+ Nueva</button>
+      </div>
+      <div id="solicitudesList"></div>
+    </div>
+
+    <!-- CLIENTAS -->
+    <div class="page" id="pageClientas">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="page-titulo">Clientas</div>
+        <button class="btn-primary" onclick="abrirNuevaClienta()">+ Nueva</button>
+      </div>
+      <input type="text" class="search-input" placeholder="Buscar por nombre o DNI..." oninput="buscarClientas(this.value)" id="searchClientas">
+      <div id="clientasList"></div>
+    </div>
+
+    <!-- FINANZAS -->
+    <div class="page" id="pageFinanzas">
+      <div class="page-header">
+        <div class="page-titulo">Finanzas</div>
+      </div>
+      <div class="filtro-bar">
+        <button class="filtro-btn" onclick="setFiltroFin('hoy',this)">Hoy</button>
+        <button class="filtro-btn" onclick="setFiltroFin('semana',this)">Semana</button>
+        <button class="filtro-btn activo" onclick="setFiltroFin('mes',this)">Mes</button>
+      </div>
+      <div id="finanzasContent"></div>
+    </div>
+
+
+    <!-- PRECIOS -->
+    <div class="page" id="pagePrecios">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="page-titulo">Lista de precios</div><div class="page-sub">Servicios y sus precios</div></div>
+        <button class="btn-primary" onclick="abrirNuevoPrecio()">+ Agregar</button>
+      </div>
+      <div id="modalNuevoPrecio" style="display:none;background:#fff;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end">
+          <div class="form-group" style="margin:0"><label class="form-label">Servicio</label>
+            <select class="form-select" id="precioServicio">
+              <option value="">Elegí un servicio...</option>
+              <option>Tecnica clasica pelo por pelo</option><option>Volumen 2D</option>
+              <option>Volumen Griego 3D</option><option>Volumen Brasilero</option>
+              <option>Volumen Hollywood</option><option>Volumen Wispy</option><option>Volumen Anime</option>
+              <option>Lash Lifting</option><option>Lash Lifting mas Tinte</option>
+              <option>Laminado de cejas</option><option>Henna de cejas</option>
+              <option>Perfilado de cejas</option><option>Depilacion de bozo</option>
+              <option>Limpieza facial profunda</option><option>Dermaplaning</option>
+              <option>Shock de hidratacion</option><option>Hydra Lips</option>
+              <option>Microneedling con exosomas</option><option>Tratamiento anti-age</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0"><label class="form-label">Precio $</label>
+            <input type="number" class="form-input" id="precioMonto" placeholder="0" style="width:120px">
+          </div>
+          <button class="btn-primary" onclick="guardarPrecio()">Guardar</button>
+        </div>
+      </div>
+      <div id="preciosList"></div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="page" id="pageProductos">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="page-titulo">Productos</div><div class="page-sub">Inventario del salón</div></div>
+        <button class="btn-primary" onclick="abrirNuevoProducto()">+ Agregar</button>
+      </div>
+      <div id="modalNuevoProducto" style="display:none;background:#fff;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="prodNombre" placeholder="Nombre del producto"></div>
+          <div class="form-group"><label class="form-label">Categoría</label><input type="text" class="form-input" id="prodCategoria" placeholder="Ej: Adhesivos"></div>
+          <div class="form-group"><label class="form-label">Precio costo $</label><input type="number" class="form-input" id="prodCosto" placeholder="0"></div>
+          <div class="form-group"><label class="form-label">Precio venta $</label><input type="number" class="form-input" id="prodVenta" placeholder="0"></div>
+          <div class="form-group"><label class="form-label">Stock actual</label><input type="number" class="form-input" id="prodStock" placeholder="0"></div>
+          <div class="form-group"><label class="form-label">Stock mínimo</label><input type="number" class="form-input" id="prodMinimo" placeholder="0"></div>
+        </div>
+        <button class="btn-primary" onclick="guardarProducto()">Guardar producto</button>
+        <button onclick="cerrarNuevoProducto()" style="background:none;border:1px solid #ddd;padding:10px 20px;margin-left:8px;cursor:pointer;font-family:var(--sans);font-size:.8rem;color:var(--muted)">Cancelar</button>
+      </div>
+      <input type="text" class="search-input" placeholder="Buscar producto..." oninput="buscarProductos(this.value)" id="searchProductos">
+      <div id="productosList"></div>
+    </div>
+
+  </div>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-items">
+      <button class="mobile-nav-item activo" onclick="irA('hoy')"><span class="mobile-nav-icon">&#128197;</span>Hoy</button>
+      <button class="mobile-nav-item" onclick="irA('agenda')"><span class="mobile-nav-icon">&#128336;</span>Agenda</button>
+      <button class="mobile-nav-item" onclick="irA('solicitudes')"><span class="mobile-nav-icon">&#9997;</span>Solicitudes</button>
+      <button class="mobile-nav-item" onclick="irA('clientas')"><span class="mobile-nav-icon">&#128100;</span>Clientas</button>
+      <button class="mobile-nav-item" id="mobileFinBtn" onclick="irA('finanzas')" style="display:none"><span class="mobile-nav-icon">&#128200;</span>Finanzas</button>
+      <button class="mobile-nav-item" id="mobilePreciosBtn" onclick="irA('precios')" style="display:none"><span class="mobile-nav-icon">&#128176;</span>Precios</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA SOLICITUD -->
+<div class="modal-overlay" id="modalSolicitud">
+  <div class="modal-box">
+    <button class="modal-close" onclick="cerrarModal('modalSolicitud')">&times;</button>
+    <div class="modal-titulo">Nueva solicitud</div>
+    <div class="form-group">
+      <label class="form-label">Buscar clienta</label>
+      <input type="text" class="form-input" id="solBusqClienta" placeholder="Nombre o DNI..." oninput="buscarClientasSol(this.value)">
+      <div id="solClientasList" style="max-height:150px;overflow-y:auto;margin-top:4px"></div>
+      <div id="solClientaSel" style="display:none;background:var(--w3);padding:10px;margin-top:6px;font-size:.85rem;color:var(--blk)"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Servicio</label>
+      <select class="form-select" id="solServicio">
+        <option value="">Elegí un servicio...</option>
+        <option>Tecnica clasica pelo por pelo</option><option>Volumen 2D</option>
+        <option>Volumen Griego 3D</option><option>Volumen Brasilero</option>
+        <option>Volumen Hollywood</option><option>Volumen Wispy</option><option>Volumen Anime</option>
+        <option>Lash Lifting</option><option>Lash Lifting mas Tinte</option>
+        <option>Laminado de cejas</option><option>Henna de cejas</option>
+        <option>Perfilado de cejas</option><option>Depilacion de bozo</option>
+        <option>Limpieza facial profunda</option><option>Dermaplaning</option>
+        <option>Shock de hidratacion</option><option>Hydra Lips</option>
+        <option>Microneedling con exosomas</option><option>Tratamiento anti-age</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="solFecha">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hora</label>
+        <select class="form-select" id="solHora">
+          <option value="">Horario...</option>
+          <option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option>
+          <option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option>
+          <option>17:00</option><option>18:00</option><option>19:00</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas (opcional)</label>
+      <input type="text" class="form-input" id="solNotas" placeholder="Observaciones...">
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="enviarSolicitud()">Enviar solicitud</button>
+  </div>
+</div>
+
+<!-- MODAL NUEVA CLIENTA -->
+<div class="modal-overlay" id="modalClienta">
+  <div class="modal-box">
+    <button class="modal-close" onclick="cerrarModal('modalClienta')">&times;</button>
+    <div class="modal-titulo">Nueva clienta</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="ncNombre" placeholder="Nombre"></div>
+      <div class="form-group"><label class="form-label">Apellido</label><input type="text" class="form-input" id="ncApellido" placeholder="Apellido"></div>
+    </div>
+    <div class="form-group"><label class="form-label">DNI *</label><input type="number" class="form-input" id="ncDni" placeholder="Sin puntos"></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input type="tel" class="form-input" id="ncTel" placeholder="WhatsApp"></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="ncEmail" placeholder="Email"></div>
+    <button class="btn-primary" style="width:100%" onclick="guardarNuevaClienta()">Dar de alta</button>
+  </div>
+</div>
+
+<script>
+var SUPA_URL='https://ltyfmxbcirakujtkemjb.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0eWZteGJjaXJha3VqdGtlbWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjM3ODQsImV4cCI6MjA5NjMzOTc4NH0.kIw04WoYF62wqSVPE8I6mmn4cVQ0IqunzjMtAC6BXEc';
+
+var sesion={user:null,lashista:null};
+var calMes=new Date().getMonth();
+var calAnio=new Date().getFullYear();
+var fechaSel=hoy();
+var filtroFin='mes';
+var solClientaSelId=null;
+var MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function hoy(){return new Date().toISOString().split('T')[0];}
+function pad(n){return String(n).padStart(2,'0');}
+function hdr(){return{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};}
+async function supa(path,opts){var r=await fetch(SUPA_URL+'/rest/v1/'+path,Object.assign({headers:hdr()},opts||{}));return r.json();}
+
+function getEstadoColor(e){return e==='confirmado'?'#2d7a2d':e==='cancelado'?'#c0392b':'#b8956a';}
+function getNivel(v){
+  if(v>=35)return{nombre:'VIP',color:'#9b59b6'};
+  if(v>=20)return{nombre:'Diamante',color:'#2980b9'};
+  if(v>=10)return{nombre:'Oro',color:'#c8900a'};
+  if(v>=5)return{nombre:'Plata',color:'#888'};
+  return{nombre:'Bronce',color:'#b8956a'};
+}
+
+// LOGIN
+async function handleLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  var err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Completá email y contraseña';err.style.display='block';return;}
+
+  var r=await fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
+    method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({email:email,password:pass})
+  });
+  var data=await r.json();
+  if(!data.access_token){err.style.display='block';return;}
+
+  sesion.user=data.user;
+  sesion.token=data.access_token;
+
+  // Buscar lashista
+  var ls=await supa('lashistas?usuario_id=eq.'+data.user.id+'&select=*&limit=1');
+  if(!ls||ls.length===0){err.textContent='No tenés acceso al panel profesional';err.style.display='block';return;}
+  sesion.lashista=ls[0];
+
+  localStorage.setItem('panel_sesion',JSON.stringify(sesion));
+  iniciarApp();
+}
+
+function iniciarApp(){
+  var l=sesion.lashista;
+  document.getElementById('sideNombre').textContent=l.nombre;
+  document.getElementById('sideRol').textContent=l.rol==='admin'?'Admin':'Lashista';
+  document.getElementById('fechaHoyLabel').textContent=new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+
+  if(l.rol==='admin'){
+    document.getElementById('navFinanzas').style.display='flex';
+    document.getElementById('navPrecios').style.display='flex';
+    document.getElementById('navProductos').style.display='flex';
+    document.getElementById('mobileFinBtn').style.display='flex';
+    document.getElementById('mobilePreciosBtn').style.display='flex';
+  }
+
+  document.getElementById('scrLogin').classList.add('hidden');
+  document.getElementById('appLayout').classList.add('visible');
+  document.querySelector('input[name="fecha"]');
+  document.getElementById('solFecha').min=hoy();
+
+  cargarTodo();
+  renderCalendario();
+}
+
+async function cargarTodo(){
+  await Promise.all([cargarHoy(), cargarSolicitudes(), cargarClientas()]);
+  if(sesion.lashista.rol==='admin'){cargarFinanzas();cargarPrecios();cargarProductos();}
+}
+
+// HOY
+async function cargarHoy(){
+  var es=sesion.lashista.rol==='admin';
+  var nom=sesion.lashista.nombre;
+  var q='turnos?fecha=eq.'+hoy()+'&select=*,usuarios(nombre,apellido)&order=hora.asc';
+  if(!es) q+='&especialista=ilike.%25'+encodeURIComponent(nom)+'%25';
+  var data=await supa(q);
+  var turnos=data||[];
+
+  var conf=turnos.filter(function(t){return t.estado==='confirmado';}).length;
+  var pend=turnos.filter(function(t){return t.estado==='pendiente';}).length;
+
+  document.getElementById('statsHoy').innerHTML=
+    '<div class="stat-card"><div class="stat-label">Total hoy</div><div class="stat-val">'+turnos.length+'</div></div>'+
+    '<div class="stat-card" style="border-top-color:#2d7a2d"><div class="stat-label">Confirmados</div><div class="stat-val" style="color:#2d7a2d">'+conf+'</div></div>'+
+    '<div class="stat-card" style="border-top-color:#b8956a"><div class="stat-label">Pendientes</div><div class="stat-val" style="color:#b8956a">'+pend+'</div></div>';
+
+  renderTurnos('turnosHoyList', turnos);
+}
+
+function renderTurnos(contenedorId, turnos){
+  var c=document.getElementById(contenedorId);
+  if(!turnos||turnos.length===0){
+    c.innerHTML='<div class="empty"><div class="empty-ico">&#128197;</div><div class="empty-txt">Sin turnos</div></div>';
+    return;
+  }
+  c.innerHTML=turnos.map(function(t){
+    var color=getEstadoColor(t.estado);
+    var nombre=(t.usuarios?.nombre||'')+ ' '+(t.usuarios?.apellido||'');
+    var acciones='';
+    if(sesion.lashista.rol==='admin'&&t.estado==='pendiente'){
+      acciones='<div class="turno-acciones">'
+        +'<button class="btn-confirmar" onclick="confirmarTurno(\''+t.id+'\')">Confirmar</button>'
+        +'<button class="btn-rechazar" onclick="rechazarTurno(\''+t.id+'\')">Rechazar</button>'
+        +'</div>';
+    }
+    return '<div class="turno-card">'
+      +'<div class="turno-accent" style="background:'+color+'"></div>'
+      +'<div class="turno-body">'
+      +'<div class="turno-top"><span class="turno-hora">'+t.hora+'</span>'
+      +'<span class="turno-badge" style="background:'+color+'22;color:'+color+'">'+t.estado+'</span></div>'
+      +'<div class="turno-servicio">'+t.servicio+'</div>'
+      +'<div class="turno-cliente">'+nombre.trim()+'</div>'
+      +'<div class="turno-esp">'+t.especialista+'</div>'
+      +acciones
+      +'</div></div>';
+  }).join('');
+}
+
+// AGENDA
+function renderCalendario(){
+  var label=MESES[calMes]+' '+calAnio;
+  document.getElementById('calMesLabel').textContent=label;
+  var total=new Date(calAnio,calMes+1,0).getDate();
+  var primerDia=new Date(calAnio,calMes,1).getDay();
+  var grid=document.getElementById('calGrid');
+  var html='';
+  for(var i=0;i<primerDia;i++) html+='<div class="cal-celda"></div>';
+  for(var d=1;d<=total;d++){
+    var ds=calAnio+'-'+pad(calMes+1)+'-'+pad(d);
+    var cls='cal-celda';
+    if(ds<hoy()) cls+=' pasado';
+    if(ds===fechaSel) cls+=' selec';
+    if(ds===hoy()&&ds!==fechaSel) cls+=' hoy';
+    html+='<div class="'+cls+'" onclick="selecFecha(\''+ds+'\')">'
+      +d+'<div class="cal-dot" style="display:none" id="dot-'+ds+'"></div></div>';
+  }
+  grid.innerHTML=html;
+  cargarTurnosAgenda();
+}
+
+function cambiarMes(dir){
+  calMes+=dir;
+  if(calMes<0){calMes=11;calAnio--;}
+  if(calMes>11){calMes=0;calAnio++;}
+  renderCalendario();
+}
+
+function selecFecha(f){
+  fechaSel=f;
+  renderCalendario();
+}
+
+async function cargarTurnosAgenda(){
+  var es=sesion.lashista.rol==='admin';
+  var nom=sesion.lashista.nombre;
+  var q='turnos?fecha=eq.'+fechaSel+'&select=*,usuarios(nombre,apellido)&order=hora.asc';
+  if(!es) q+='&especialista=ilike.%25'+encodeURIComponent(nom)+'%25';
+  var data=await supa(q);
+  var label=document.createElement('div');
+  label.style.cssText='font-size:.85rem;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--w4)';
+  label.textContent='Turnos del '+fechaSel;
+  var c=document.getElementById('turnosAgendaList');
+  c.innerHTML='';
+  c.appendChild(label);
+  var tmp=document.createElement('div');
+  tmp.id='turnosAgendaInner';
+  c.appendChild(tmp);
+  renderTurnos('turnosAgendaInner', data||[]);
+}
+
+// SOLICITUDES
+async function cargarSolicitudes(){
+  var es=sesion.lashista.rol==='admin';
+  var nom=sesion.lashista.nombre;
+  var q='turnos?estado=eq.pendiente&select=*,usuarios(nombre,apellido)&order=fecha.asc';
+  if(!es) q+='&especialista=ilike.%25'+encodeURIComponent(nom)+'%25';
+  var data=await supa(q)||[];
+
+  var badge=document.getElementById('badgeSol');
+  if(data.length>0){badge.textContent=data.length;badge.style.display='inline';}
+  else badge.style.display='none';
+
+  var c=document.getElementById('solicitudesList');
+  if(!data||data.length===0){
+    c.innerHTML='<div class="empty"><div class="empty-ico">&#9997;</div><div class="empty-txt">Sin solicitudes pendientes</div></div>';
+    return;
+  }
+  c.innerHTML=data.map(function(t){
+    var nombre=(t.usuarios?.nombre||'')+' '+(t.usuarios?.apellido||'');
+    var acciones='';
+    if(sesion.lashista.rol==='admin'){
+      acciones='<div class="turno-acciones">'
+        +'<button class="btn-confirmar" onclick="confirmarTurno(\''+t.id+'\')">Confirmar</button>'
+        +'<button class="btn-rechazar" onclick="rechazarTurno(\''+t.id+'\')">Rechazar</button>'
+        +'</div>';
+    }
+    return '<div class="turno-card"><div class="turno-accent" style="background:#b8956a"></div>'
+      +'<div class="turno-body">'
+      +'<div class="turno-top"><span class="turno-hora">'+t.fecha+' '+t.hora+'</span>'
+      +'<span class="turno-badge" style="background:#b8956a22;color:#b8956a">pendiente</span></div>'
+      +'<div class="turno-servicio">'+t.servicio+'</div>'
+      +'<div class="turno-cliente">'+nombre.trim()+'</div>'
+      +'<div class="turno-esp">'+t.especialista+'</div>'
+      +acciones+'</div></div>';
+  }).join('');
+}
+
+async function confirmarTurno(id){
+  // Buscar precio del servicio
+  var t=await supa('turnos?id=eq.'+id+'&select=servicio&limit=1');
+  var srv=t&&t[0]?t[0].servicio:'';
+  var keyword=srv.split(' ')[0];
+  var pr=await supa('precios_servicios?servicio=ilike.%25'+encodeURIComponent(keyword)+'%25&activo=eq.true&select=precio&limit=1');
+  var monto=pr&&pr[0]?pr[0].precio:0;
+  await supa('turnos?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({estado:'confirmado',monto:monto,cobrado:monto>0})});
+  cargarTodo();
+  alert('Turno confirmado'+(monto?' — $'+monto:''));
+}
+
+async function rechazarTurno(id){
+  var msg=window.prompt('Motivo del rechazo (opcional):') ;
+  await supa('turnos?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({estado:'cancelado',mensaje_rechazo:msg||'Turno rechazado'})});
+  cargarTodo();
+  alert('Turno rechazado');
+}
+
+// CLIENTAS
+var todasClientas=[];
+async function cargarClientas(){
+  var data=await supa('usuarios?select=id,nombre,apellido,dni,visitas,nivel&order=nombre.asc&limit=100');
+  todasClientas=data||[];
+  renderClientas(todasClientas);
+}
+
+function renderClientas(lista){
+  var c=document.getElementById('clientasList');
+  if(!lista||lista.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin clientas</div></div>';return;}
+  c.innerHTML=lista.map(function(cl){
+    var nivel=getNivel(cl.visitas||0);
+    return '<div class="clienta-item" onclick="verClienta(\''+cl.id+'\')">'
+      +'<div class="clienta-avatar" style="border-color:'+nivel.color+';color:'+nivel.color+'">'+cl.nombre.charAt(0).toUpperCase()+'</div>'
+      +'<div><div class="clienta-nombre">'+cl.nombre+' '+(cl.apellido||'')+'</div>'
+      +'<div class="clienta-info">DNI '+cl.dni+' · '+nivel.nombre+' · '+(cl.visitas||0)+' visitas</div></div>'
+      +'<div style="margin-left:auto;color:#ddd;font-size:1.2rem">&#8250;</div>'
+      +'</div>';
+  }).join('');
+}
+
+function buscarClientas(q){
+  if(!q){renderClientas(todasClientas);return;}
+  var f=todasClientas.filter(function(c){return(c.nombre+' '+(c.apellido||'')+' '+c.dni).toLowerCase().includes(q.toLowerCase());});
+  renderClientas(f);
+}
+
+async function verClienta(id){
+  var data=await supa('usuarios?id=eq.'+id+'&select=*&limit=1');
+  if(!data||!data[0])return;
+  var c=data[0];
+  var nivel=getNivel(c.visitas||0);
+  alert(c.nombre+' '+(c.apellido||'')+'\nDNI: '+c.dni+'\nTel: '+(c.telefono||'No cargado')+'\nNivel: '+nivel.nombre+'\nVisitas: '+(c.visitas||0));
+}
+
+async function guardarNuevaClienta(){
+  var nombre=document.getElementById('ncNombre').value.trim();
+  var apellido=document.getElementById('ncApellido').value.trim();
+  var dni=document.getElementById('ncDni').value.trim();
+  var tel=document.getElementById('ncTel').value.trim();
+  var email=document.getElementById('ncEmail').value.trim();
+  if(!nombre||!dni){alert('Nombre y DNI son obligatorios');return;}
+  var existe=await supa('usuarios?dni=eq.'+encodeURIComponent(dni)+'&select=id&limit=1');
+  if(existe&&existe.length>0){alert('Ya existe una clienta con ese DNI');return;}
+  await supa('usuarios',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({nombre:nombre,apellido:apellido,dni:dni,telefono:tel,email:email,password_hash:dni,nivel:'Bronce',visitas:0})});
+  cerrarModal('modalClienta');
+  document.getElementById('ncNombre').value='';document.getElementById('ncApellido').value='';
+  document.getElementById('ncDni').value='';document.getElementById('ncTel').value='';document.getElementById('ncEmail').value='';
+  cargarClientas();
+  alert('Clienta dada de alta correctamente');
+}
+
+// BUSCAR CLIENTA EN SOLICITUD
+async function buscarClientasSol(q){
+  if(q.length<2){document.getElementById('solClientasList').innerHTML='';return;}
+  var data=await supa('usuarios?or=(nombre.ilike.%25'+encodeURIComponent(q)+'%25,dni.ilike.%25'+encodeURIComponent(q)+'%25)&select=id,nombre,apellido,dni&limit=8');
+  document.getElementById('solClientasList').innerHTML=(data||[]).map(function(c){
+    return '<div style="padding:8px;cursor:pointer;border-bottom:1px solid #f0ebe3;font-size:.85rem" onclick="selecClientaSol(\''+c.id+'\',\''+c.nombre+' '+(c.apellido||'')+' — DNI '+c.dni+'\')">'
+      +c.nombre+' '+(c.apellido||'')+'<span style="color:#bbb;font-size:.75rem"> · DNI '+c.dni+'</span></div>';
+  }).join('');
+}
+
+function selecClientaSol(id,label){
+  solClientaSelId=id;
+  document.getElementById('solClientaSel').textContent=label;
+  document.getElementById('solClientaSel').style.display='block';
+  document.getElementById('solClientasList').innerHTML='';
+  document.getElementById('solBusqClienta').value='';
+}
+
+async function enviarSolicitud(){
+  if(!solClientaSelId){alert('Seleccioná una clienta');return;}
+  var srv=document.getElementById('solServicio').value;
+  var fecha=document.getElementById('solFecha').value;
+  var hora=document.getElementById('solHora').value;
+  var notas=document.getElementById('solNotas').value;
+  if(!srv||!fecha||!hora){alert('Completá servicio, fecha y horario');return;}
+  await supa('turnos',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({usuario_id:solClientaSelId,fecha:fecha,hora:hora,servicio:srv,especialista:sesion.lashista.nombre,estado:'pendiente',notas:notas||'Solicitud de '+sesion.lashista.nombre})});
+  cerrarModal('modalSolicitud');
+  solClientaSelId=null;
+  document.getElementById('solClientaSel').style.display='none';
+  cargarSolicitudes();
+  alert('Solicitud enviada');
+}
+
+// FINANZAS
+async function cargarFinanzas(){
+  var desde=null;
+  var hoyStr=hoy();
+  if(filtroFin==='hoy') desde=hoyStr;
+  else if(filtroFin==='semana'){var d=new Date();d.setDate(d.getDate()-7);desde=d.toISOString().split('T')[0];}
+  else{var d2=new Date();d2.setDate(1);desde=d2.toISOString().split('T')[0];}
+
+  var qt='turnos?cobrado=eq.true&select=monto,especialista';
+  if(desde) qt+='&fecha=gte.'+desde;
+  var turnos=await supa(qt)||[];
+
+  var celNom=sesion.lashista.nombre;
+  var ingPropios=turnos.filter(function(t){return t.especialista&&t.especialista.toLowerCase().includes(celNom.toLowerCase());}).reduce(function(s,t){return s+(t.monto||0);},0);
+  var ingTotal=turnos.reduce(function(s,t){return s+(t.monto||0);},0);
+
+  var qg='gastos?select=monto';
+  if(desde) qg+='&fecha=gte.'+desde;
+  var gastos=await supa(qg)||[];
+  var totalGastos=gastos.reduce(function(s,g){return s+(g.monto||0);},0);
+
+  var qv='ventas_productos?select=cantidad,precio_venta,productos(precio_costo)';
+  if(desde) qv+='&fecha=gte.'+desde;
+  var ventas=await supa(qv)||[];
+  var ingProd=ventas.reduce(function(s,v){return s+(v.precio_venta*v.cantidad);},0);
+  var ganProd=ventas.reduce(function(s,v){return s+((v.precio_venta-(v.productos?.precio_costo||0))*v.cantidad);},0);
+
+  var ganNeta=ingTotal+ingProd-totalGastos;
+
+  document.getElementById('finanzasContent').innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">'
+    +'<div class="fin-card" style="border-top-color:#2d7a2d"><div class="fin-label">Entradas servicios</div><div class="fin-val" style="color:#2d7a2d">$'+ingTotal.toLocaleString()+'</div></div>'
+    +'<div class="fin-card" style="border-top-color:#2980b9"><div class="fin-label">Ventas productos</div><div class="fin-val" style="color:#2980b9">$'+ingProd.toLocaleString()+'</div></div>'
+    +'<div class="fin-card" style="border-top-color:#c0392b"><div class="fin-label">Gastos</div><div class="fin-val" style="color:#c0392b">$'+totalGastos.toLocaleString()+'</div></div>'
+    +'<div class="fin-card"><div class="fin-label">Ganancia neta</div><div class="fin-val">$'+ganNeta.toLocaleString()+'</div></div>'
+    +'</div>'
+    +'<div style="background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">'
+    +'<div class="fin-row"><div class="fin-key">Mis servicios ('+celNom+')</div><div class="fin-num">$'+ingPropios.toLocaleString()+'</div></div>'
+    +'<div class="fin-row"><div class="fin-key">Servicios empleadas</div><div class="fin-num">$'+(ingTotal-ingPropios).toLocaleString()+'</div></div>'
+    +'<div class="fin-row"><div class="fin-key">Ganancia productos</div><div class="fin-num">$'+ganProd.toLocaleString()+'</div></div>'
+    +'<div class="fin-row"><div class="fin-key">Gastos del salón</div><div class="fin-num" style="color:#c0392b">-$'+totalGastos.toLocaleString()+'</div></div>'
+    +'<div class="fin-row" style="border-bottom:none"><div class="fin-key" style="font-weight:600;color:var(--blk)">GANANCIA NETA</div><div class="fin-num" style="font-size:1.1rem;color:var(--blk)">$'+ganNeta.toLocaleString()+'</div></div>'
+    +'</div>';
+}
+
+function setFiltroFin(f,btn){
+  filtroFin=f;
+  document.querySelectorAll('.filtro-btn').forEach(function(b){b.classList.remove('activo');});
+  btn.classList.add('activo');
+  cargarFinanzas();
+}
+
+// NAVEGACIÓN
+function irA(pagina){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('activa');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('activo');});
+  document.querySelectorAll('.mobile-nav-item').forEach(function(n){n.classList.remove('activo');});
+  document.getElementById('page'+pagina.charAt(0).toUpperCase()+pagina.slice(1)).classList.add('activa');
+  if(pagina==='agenda') cargarTurnosAgenda();
+  if(pagina==='finanzas') cargarFinanzas();
+  if(pagina==='precios') cargarPrecios();
+  if(pagina==='productos') cargarProductos();
+}
+
+// MODALES
+function abrirNuevaSolicitud(){document.getElementById('modalSolicitud').classList.add('open');}
+function abrirNuevaClienta(){document.getElementById('modalClienta').classList.add('open');}
+function cerrarModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+
+// PRECIOS
+var editandoPrecioId=null;
+async function cargarPrecios(){
+  var data=await supa('precios_servicios?activo=eq.true&order=servicio.asc')||[];
+  var c=document.getElementById('preciosList');
+  if(!data||data.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin precios cargados. Agregá el primero.</div></div>';return;}
+  c.innerHTML='<div style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
+    data.map(function(p){
+      return '<div class="fin-row" style="padding:12px 16px">'
+        +'<div class="fin-key">'+p.servicio+'</div>'
+        +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<div class="fin-num" style="color:var(--gold);font-size:1rem">$'+p.precio.toLocaleString()+'</div>'
+        +'<button onclick="editarPrecio(''+p.id+'',''+p.servicio+'','+p.precio+')" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:.78rem">Editar</button>'
+        +'<button onclick="eliminarPrecio(''+p.id+'')" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:.78rem">X</button>'
+        +'</div></div>';
+    }).join('')
+    +'</div>';
+}
+
+function abrirNuevoPrecio(){
+  document.getElementById('modalNuevoPrecio').style.display='block';
+  editandoPrecioId=null;
+  document.getElementById('precioServicio').value='';
+  document.getElementById('precioMonto').value='';
+}
+
+function editarPrecio(id,srv,precio){
+  document.getElementById('modalNuevoPrecio').style.display='block';
+  editandoPrecioId=id;
+  document.getElementById('precioServicio').value=srv;
+  document.getElementById('precioMonto').value=precio;
+}
+
+async function guardarPrecio(){
+  var srv=document.getElementById('precioServicio').value;
+  var monto=parseFloat(document.getElementById('precioMonto').value)||0;
+  if(!srv||!monto){alert('Completá servicio y precio');return;}
+  if(editandoPrecioId){
+    await supa('precios_servicios?id=eq.'+editandoPrecioId,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({servicio:srv,precio:monto})});
+  } else {
+    await supa('precios_servicios',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({servicio:srv,precio:monto,activo:true})});
+  }
+  document.getElementById('modalNuevoPrecio').style.display='none';
+  cargarPrecios();
+}
+
+async function eliminarPrecio(id){
+  if(!confirm('Eliminar este precio?'))return;
+  await supa('precios_servicios?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({activo:false})});
+  cargarPrecios();
+}
+
+// PRODUCTOS
+var todosProductos=[];
+async function cargarProductos(){
+  var data=await supa('productos?activo=eq.true&order=nombre.asc')||[];
+  todosProductos=data;
+  renderProductos(data);
+}
+
+function renderProductos(lista){
+  var c=document.getElementById('productosList');
+  if(!lista||lista.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin productos. Agregá el primero.</div></div>';return;}
+  c.innerHTML='<div style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
+    lista.map(function(p){
+      var alerta=p.stock_actual<=p.stock_minimo;
+      return '<div class="fin-row" style="padding:12px 16px;border-left:3px solid '+(alerta?'#c0392b':'transparent')+'">'
+        +'<div>'
+        +'<div style="font-size:.95rem;color:var(--blk);margin-bottom:2px">'+p.nombre+'</div>'
+        +'<div style="font-size:.75rem;color:var(--muted)">Costo: $'+p.precio_costo+' · Venta: $'+p.precio_venta+' · Stock: <span style="color:'+(alerta?'#c0392b':'#2d7a2d')+'">'+p.stock_actual+'</span>'+(alerta?' ⚠ Reponer':'')+'</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:8px">'
+        +'<button onclick="venderProducto(''+p.id+'',''+p.nombre+'','+p.precio_venta+','+p.stock_actual+')" style="background:var(--gold);color:#000;border:none;padding:6px 12px;cursor:pointer;font-size:.75rem;font-weight:600">Vender</button>'
+        +'<button onclick="eliminarProducto(''+p.id+'')" style="background:none;border:1px solid #ddd;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:.75rem">X</button>'
+        +'</div></div>';
+    }).join('')
+    +'</div>';
+}
+
+function buscarProductos(q){
+  if(!q){renderProductos(todosProductos);return;}
+  renderProductos(todosProductos.filter(function(p){return p.nombre.toLowerCase().includes(q.toLowerCase());}));
+}
+
+function abrirNuevoProducto(){document.getElementById('modalNuevoProducto').style.display='block';}
+function cerrarNuevoProducto(){document.getElementById('modalNuevoProducto').style.display='none';}
+
+async function guardarProducto(){
+  var nombre=document.getElementById('prodNombre').value.trim();
+  if(!nombre){alert('El nombre es obligatorio');return;}
+  await supa('productos',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({
+    nombre:nombre,
+    categoria:document.getElementById('prodCategoria').value,
+    precio_costo:parseFloat(document.getElementById('prodCosto').value)||0,
+    precio_venta:parseFloat(document.getElementById('prodVenta').value)||0,
+    stock_actual:parseInt(document.getElementById('prodStock').value)||0,
+    stock_minimo:parseInt(document.getElementById('prodMinimo').value)||0,
+    activo:true
+  })});
+  cerrarNuevoProducto();
+  ['prodNombre','prodCategoria','prodCosto','prodVenta','prodStock','prodMinimo'].forEach(function(id){document.getElementById(id).value='';});
+  cargarProductos();
+}
+
+async function venderProducto(id,nombre,precio,stock){
+  var cant=parseInt(window.prompt('Cantidad a vender (stock: '+stock+'):','1'));
+  if(!cant||cant<1)return;
+  if(cant>stock){alert('No hay suficiente stock');return;}
+  var lashistaId=sesion.lashista.id;
+  await supa('ventas_productos',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({producto_id:id,cantidad:cant,precio_venta:precio,lashista_id:lashistaId,fecha:hoy()})});
+  await supa('productos?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({stock_actual:stock-cant})});
+  cargarProductos();
+  alert('Venta registrada: '+cant+' x '+nombre+' = $'+(cant*precio));
+}
+
+async function eliminarProducto(id){
+  if(!confirm('Eliminar este producto?'))return;
+  await supa('productos?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({activo:false})});
+  cargarProductos();
+}
+
+// SESIÓN
+function cerrarSesion(){
+  sesion={user:null,lashista:null};
+  localStorage.removeItem('panel_sesion');
+  document.getElementById('scrLogin').classList.remove('hidden');
+  document.getElementById('appLayout').classList.remove('visible');
+}
+
+// AUTO-LOGIN
+window.addEventListener('load',function(){
+  var guardado=localStorage.getItem('panel_sesion');
+  if(guardado){
+    try{sesion=JSON.parse(guardado);if(sesion.lashista)iniciarApp();}
+    catch(e){localStorage.removeItem('panel_sesion');}
+  }
+  document.getElementById('loginEmail').addEventListener('keydown',function(e){if(e.key==='Enter')handleLogin();});
+  document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')handleLogin();});
+});
+</script>
+</body>
+</html>

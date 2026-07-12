@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Skin Salta">
+<meta name="theme-color" content="#1a1a1a">
+<title>Skin Salta — Mi cuenta</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --blk:#1a1a1a;--w:#fff;--w2:#fafaf8;--w3:#f5f2ee;--w4:#ece8e2;
+  --gold:#b8956a;--gold2:#c9a97d;
+  --green:#2d7a2d;--red:#c0392b;
+  --text:#1a1a1a;--muted:#888;--light:#bbb;
+  --serif:'Playfair Display',serif;
+  --sans:'Outfit',system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:300;color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;transition:transform .4s var(--ease),opacity .4s;will-change:transform}
+.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.screen.out{transform:translateX(-100%);opacity:0;pointer-events:none}
+
+/* ── LOGIN ── */
+#scrLogin{background:var(--blk);justify-content:flex-end}
+.login-bg{position:absolute;inset:0;background:url('imagenes/pelo-por-pelo.jpg') center/cover no-repeat;opacity:.25}
+.login-content{position:relative;z-index:1;padding:32px 28px 48px}
+.login-logo{width:140px;margin-bottom:24px}
+.login-titulo{font-family:var(--serif);font-size:2rem;color:var(--w);font-weight:400;line-height:1.2;margin-bottom:8px}
+.login-sub{font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:32px;line-height:1.6}
+.login-label{font-size:.65rem;letter-spacing:.2em;color:var(--gold);margin-bottom:8px;text-transform:uppercase;font-weight:600}
+.login-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--w);font-family:var(--sans);font-size:1.1rem;padding:14px 16px;margin-bottom:12px;outline:none;border-radius:0;-webkit-appearance:none}
+.login-input::placeholder{color:rgba(255,255,255,.25)}
+.login-input:focus{border-color:var(--gold);background:rgba(255,255,255,.12)}
+.login-btn{width:100%;background:var(--gold);color:var(--blk);border:none;padding:16px;font-family:var(--sans);font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:8px;transition:background .2s}
+.login-btn:active{background:var(--gold2)}
+.login-err{font-size:.8rem;color:#ff6b6b;margin-top:8px;display:none}
+.login-registro{text-align:center;margin-top:20px;font-size:.8rem;color:rgba(255,255,255,.4)}
+.login-registro a{color:var(--gold);text-decoration:none}
+
+/* ── REGISTRO ── */
+#scrRegistro{background:var(--blk);justify-content:flex-end}
+.reg-bg{position:absolute;inset:0;background:url('imagenes/lash-lifting.jpg') center/cover no-repeat;opacity:.2}
+.reg-content{position:relative;z-index:1;padding:32px 28px 48px;overflow-y:auto;max-height:100vh}
+.reg-back{color:var(--gold);font-size:.8rem;letter-spacing:.1em;cursor:pointer;margin-bottom:24px;display:inline-block}
+.reg-titulo{font-family:var(--serif);font-size:1.8rem;color:var(--w);margin-bottom:24px}
+
+/* ── HOME ── */
+#scrHome{background:var(--w2);overflow-y:auto}
+.home-header{background:var(--blk);padding:52px 20px 24px;position:relative;overflow:hidden}
+.home-header-bg{position:absolute;inset:0;background:url('imagenes/pelo-por-pelo.jpg') center/cover;opacity:.15}
+.home-header-content{position:relative;z-index:1}
+.home-logo{width:80px;margin-bottom:12px;opacity:.9}
+.home-bienvenida{font-size:.65rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.home-nombre{font-family:var(--serif);font-size:1.6rem;color:var(--w);font-weight:400}
+.home-salir{position:absolute;top:52px;right:20px;z-index:2;color:rgba(255,255,255,.4);font-size:.75rem;cursor:pointer;letter-spacing:.05em}
+
+/* TARJETA FIDELIDAD */
+.fidelidad-wrap{padding:20px 16px 0}
+.fidelidad-card{background:var(--blk);padding:24px;position:relative;overflow:hidden}
+.fidelidad-card-bg{position:absolute;inset:0;opacity:.08}
+.fidelidad-nivel-label{font-size:.6rem;letter-spacing:.2em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1}
+.fidelidad-nivel{font-family:var(--serif);font-size:1.6rem;font-weight:400;position:relative;z-index:1;margin-bottom:12px}
+.fidelidad-barra-wrap{background:rgba(255,255,255,.1);height:4px;position:relative;z-index:1;margin-bottom:8px}
+.fidelidad-barra{height:100%;transition:width .8s var(--ease)}
+.fidelidad-visitas{font-size:.75rem;color:rgba(255,255,255,.5);position:relative;z-index:1;display:flex;justify-content:space-between}
+.fidelidad-puntos{font-size:.75rem;color:rgba(255,255,255,.4);position:relative;z-index:1;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+
+/* SECCIONES */
+.sec-titulo{font-size:.6rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;padding:20px 16px 10px;font-weight:600}
+.proximo-wrap{padding:0 16px}
+.proximo-card{background:var(--w);padding:16px;border-left:3px solid var(--gold);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.proximo-fecha{font-size:.7rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.proximo-servicio{font-size:1rem;color:var(--blk);margin-bottom:4px}
+.proximo-hora{font-size:.8rem;color:var(--muted)}
+.proximo-estado{display:inline-block;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;margin-top:8px;font-weight:600}
+
+/* TABS */
+.tabs-wrap{display:flex;background:var(--w);border-bottom:1px solid var(--w4);margin-top:16px;position:sticky;top:0;z-index:10}
+.tab-btn{flex:1;padding:12px 8px;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--light);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;font-family:var(--sans)}
+.tab-btn.activa{color:var(--blk);border-bottom-color:var(--blk);font-weight:600}
+.tab-content{display:none;padding:0 16px 32px}
+.tab-content.activa{display:block}
+
+/* TURNOS */
+.turno-item{background:var(--w);padding:14px;margin-bottom:8px;border-left:3px solid var(--w4);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.turno-item.confirmado{border-left-color:var(--green)}
+.turno-item.cancelado{border-left-color:var(--red);opacity:.6}
+.turno-item.pendiente{border-left-color:var(--gold)}
+.turno-fecha{font-size:.75rem;color:var(--muted);margin-bottom:4px}
+.turno-servicio{font-size:.95rem;color:var(--blk);margin-bottom:2px}
+.turno-esp{font-size:.75rem;color:var(--light)}
+.turno-estado{display:inline-block;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;margin-top:6px;font-weight:600}
+.turno-estado.confirmado{background:#f0faf0;color:var(--green)}
+.turno-estado.cancelado{background:#fff5f5;color:var(--red)}
+.turno-estado.pendiente{background:#fdf6ee;color:var(--gold)}
+
+/* PERFIL */
+.perfil-wrap{padding-top:8px}
+.perfil-dato{padding:14px 0;border-bottom:1px solid var(--w4)}
+.perfil-key{font-size:.6rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;font-weight:600}
+.perfil-val{font-size:.95rem;color:var(--blk)}
+.perfil-edit-btn{width:100%;background:var(--blk);color:var(--w);border:none;padding:14px;font-family:var(--sans);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:20px}
+
+/* INSTALAR PWA */
+.instalar-banner{background:var(--blk);padding:14px 16px;display:flex;align-items:center;gap:12px;position:fixed;bottom:0;left:0;right:0;z-index:100;transform:translateY(100%);transition:transform .4s var(--ease)}
+.instalar-banner.show{transform:translateY(0)}
+.instalar-txt{flex:1;font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.4}
+.instalar-btn{background:var(--gold);color:var(--blk);border:none;padding:8px 16px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.instalar-cerrar{color:rgba(255,255,255,.3);cursor:pointer;font-size:1.2rem;padding:4px}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--light)}
+.empty-ico{font-size:2.5rem;margin-bottom:12px}
+.empty-txt{font-size:.9rem;line-height:1.6}
+
+/* LOADER */
+.loader{text-align:center;padding:40px;color:var(--light);font-size:.85rem}
+
+/* NUEVA RESERVA BTN */
+.reserva-btn{background:var(--blk);color:var(--w);border:none;width:100%;padding:16px;font-family:var(--sans);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.reserva-btn:active{background:var(--gold);color:var(--blk)}
+
+/* MOBILE OPTIMIZATIONS */
+input{font-size:16px!important} /* evita zoom en iOS */
+.login-content{padding:28px 24px 40px}
+.fidelidad-card{border-radius:0}
+
+/* Scroll suave en home */
+#scrHome{-webkit-overflow-scrolling:touch}
+
+/* Safe area para iPhone con notch */
+.home-header{padding-top:max(52px,env(safe-area-inset-top,52px))}
+.instalar-banner{padding-bottom:max(14px,env(safe-area-inset-bottom,14px))}
+
+@media(min-width:480px){
+  .login-content,.reg-content{max-width:420px;margin:0 auto}
+  #scrLogin,#scrRegistro{align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="screen" id="scrLogin">
+  <div class="login-bg"></div>
+  <div class="login-content">
+    <img src="logo.png" class="login-logo" alt="Skin Salta">
+    <h1 class="login-titulo">Tu espacio<br><em>de belleza.</em></h1>
+    <p class="login-sub">Ingresá con tu DNI para ver tus turnos y beneficios.</p>
+    <div class="login-label">DNI</div>
+    <input type="number" class="login-input" id="loginDni" placeholder="Sin puntos" inputmode="numeric">
+    <div class="login-label" style="margin-top:4px">CONTRASEÑA</div>
+    <input type="password" class="login-input" id="loginPass" placeholder="Tu contraseña">
+    <div class="login-err" id="loginErr">DNI o contraseña incorrectos</div>
+    <button class="login-btn" onclick="handleLogin()">Ingresar</button>
+    <p class="login-registro">¿Primera vez? <a href="#" onclick="mostrarRegistro()">Crear cuenta</a></p>
+  </div>
+</div>
+
+<!-- REGISTRO -->
+<div class="screen hidden" id="scrRegistro">
+  <div class="reg-bg"></div>
+  <div class="reg-content">
+    <span class="reg-back" onclick="mostrarLogin()">← Volver</span>
+    <h2 class="reg-titulo">Crear cuenta</h2>
+    <div class="login-label">NOMBRE *</div>
+    <input type="text" class="login-input" id="regNombre" placeholder="Tu nombre">
+    <div class="login-label">APELLIDO</div>
+    <input type="text" class="login-input" id="regApellido" placeholder="Tu apellido">
+    <div class="login-label">DNI *</div>
+    <input type="number" class="login-input" id="regDni" placeholder="Sin puntos" inputmode="numeric">
+    <div class="login-label">TELÉFONO</div>
+    <input type="tel" class="login-input" id="regTel" placeholder="Tu WhatsApp">
+    <div class="login-label">EMAIL</div>
+    <input type="email" class="login-input" id="regEmail" placeholder="tu@email.com">
+    <div class="login-err" id="regErr"></div>
+    <button class="login-btn" onclick="handleRegistro()">Crear cuenta</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen hidden" id="scrHome">
+  <div class="home-header">
+    <div class="home-header-bg"></div>
+    <div class="home-header-content">
+      <img src="logo.png" class="home-logo" alt="Skin Salta">
+      <div class="home-bienvenida">Bienvenida</div>
+      <div class="home-nombre" id="homeNombre">—</div>
+    </div>
+    <span class="home-salir" onclick="cerrarSesion()">Salir</span>
+  </div>
+
+  <!-- FIDELIDAD -->
+  <div class="fidelidad-wrap">
+    <div class="fidelidad-card" id="fidelidadCard" style="background:linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 100%)">
+      <div class="fidelidad-nivel-label">Tu nivel</div>
+      <div class="fidelidad-nivel" id="fidelidadNivel">Bronce</div>
+      <div class="fidelidad-barra-wrap">
+        <div class="fidelidad-barra" id="fidelidadBarra" style="width:0%;background:#b8956a"></div>
+      </div>
+      <div class="fidelidad-visitas">
+        <span id="fidelidadVisitas">0 visitas</span>
+        <span id="fidelidadProximo"></span>
+      </div>
+      <div class="fidelidad-puntos" id="fidelidadPuntos"></div>
+    </div>
+  </div>
+
+  <!-- PROXIMO TURNO -->
+  <div id="proximoWrap" style="display:none">
+    <div class="sec-titulo">Próximo turno</div>
+    <div class="proximo-wrap">
+      <div class="proximo-card">
+        <div class="proximo-fecha" id="proximoFecha"></div>
+        <div class="proximo-servicio" id="proximoServicio"></div>
+        <div class="proximo-hora" id="proximoHora"></div>
+        <span class="proximo-estado" id="proximoEstado"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn activa" onclick="cambiarTab('turnos',this)">Turnos</button>
+    <button class="tab-btn" onclick="cambiarTab('perfil',this)">Mi perfil</button>
+  </div>
+
+  <!-- TAB TURNOS -->
+  <div class="tab-content activa" id="tabTurnos">
+    <div style="padding-top:12px" id="turnosList"><div class="loader">Cargando...</div></div>
+    <a href="https://skinsalta.github.io/Skin-Salta/#agenda" class="reserva-btn" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">
+      ✦ Reservar nuevo turno
+    </a>
+  </div>
+
+  <!-- TAB PERFIL -->
+  <div class="tab-content" id="tabPerfil">
+    <div class="perfil-wrap">
+      <div class="perfil-dato">
+        <div class="perfil-key">Nombre</div>
+        <div class="perfil-val" id="perfilNombre">—</div>
+      </div>
+      <div class="perfil-dato">
+        <div class="perfil-key">DNI</div>
+        <div class="perfil-val" id="perfilDni">—</div>
+      </div>
+      <div class="perfil-dato">
+        <div class="perfil-key">Teléfono</div>
+        <div class="perfil-val" id="perfilTel">—</div>
+      </div>
+      <div class="perfil-dato">
+        <div class="perfil-key">Email</div>
+        <div class="perfil-val" id="perfilEmail">—</div>
+      </div>
+      <div class="perfil-dato">
+        <div class="perfil-key">Nivel de fidelidad</div>
+        <div class="perfil-val" id="perfilNivel">—</div>
+      </div>
+      <a href="https://skinsalta.github.io/Skin-Salta/#agenda" class="perfil-edit-btn" style="text-decoration:none;display:block;text-align:center">Reservar nuevo turno</a>
+    </div>
+  </div>
+</div>
+
+<!-- BANNER INSTALAR PWA -->
+<div class="instalar-banner" id="installarBanner">
+  <div class="instalar-txt">Instalá Skin Salta en tu celular para acceder más rápido.</div>
+  <button class="instalar-btn" id="installarBtn">Instalar</button>
+  <span class="instalar-cerrar" onclick="cerrarBanner()">✕</span>
+</div>
+
+<script>
+const SUPA_URL = 'https://ltyfmxbcirakujtkemjb.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0eWZteGJjaXJha3VqdGtlbWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjM3ODQsImV4cCI6MjA5NjMzOTc4NH0.kIw04WoYF62wqSVPE8I6mmn4cVQ0IqunzjMtAC6BXEc';
+
+var usuarioActual = null;
+
+function hdr() {
+  return { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
+}
+
+async function supa(path, opts) {
+  var r = await fetch(SUPA_URL + '/rest/v1/' + path, { headers: hdr(), ...opts });
+  return r.json();
+}
+
+// ── NAVEGACIÓN ──
+function mostrarScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) {
+    s.classList.remove('out');
+    if (s.id === id) s.classList.remove('hidden');
+    else s.classList.add('hidden');
+  });
+}
+
+function mostrarLogin() { mostrarScreen('scrLogin'); }
+function mostrarRegistro() { mostrarScreen('scrRegistro'); }
+
+// ── LOGIN ──
+async function handleLogin() {
+  var dni = document.getElementById('loginDni').value.trim();
+  var pass = document.getElementById('loginPass').value.trim();
+  var err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  if (!dni) { err.textContent = 'Ingresá tu DNI'; err.style.display = 'block'; return; }
+
+  var data = await supa('usuarios?dni=eq.' + encodeURIComponent(dni) + '&select=*&limit=1');
+  if (!data || data.length === 0) { err.textContent = 'No encontramos una cuenta con ese DNI'; err.style.display = 'block'; return; }
+
+  var u = data[0];
+  // La contraseña por defecto es el DNI
+  if (pass && pass !== u.password_hash && pass !== dni) {
+    err.textContent = 'Contraseña incorrecta'; err.style.display = 'block'; return;
+  }
+
+  usuarioActual = u;
+  localStorage.setItem('ss_usuario', JSON.stringify(u));
+  mostrarHome();
+}
+
+// ── REGISTRO ──
+async function handleRegistro() {
+  var nombre = document.getElementById('regNombre').value.trim();
+  var apellido = document.getElementById('regApellido').value.trim();
+  var dni = document.getElementById('regDni').value.trim();
+  var tel = document.getElementById('regTel').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var err = document.getElementById('regErr');
+  err.style.display = 'none';
+
+  if (!nombre || !dni) { err.textContent = 'Nombre y DNI son obligatorios'; err.style.display = 'block'; return; }
+
+  var existe = await supa('usuarios?dni=eq.' + encodeURIComponent(dni) + '&select=id&limit=1');
+  if (existe && existe.length > 0) { err.textContent = 'Ya existe una cuenta con ese DNI'; err.style.display = 'block'; return; }
+
+  var nuevo = await supa('usuarios', {
+    method: 'POST',
+    headers: { ...hdr(), 'Prefer': 'return=representation' },
+    body: JSON.stringify({ nombre, apellido, dni, telefono: tel, email, password_hash: dni, nivel: 'Bronce', visitas: 0 })
+  });
+
+  if (!nuevo || nuevo.length === 0) { err.textContent = 'Error al crear la cuenta. Intentá de nuevo.'; err.style.display = 'block'; return; }
+
+  usuarioActual = nuevo[0];
+  localStorage.setItem('ss_usuario', JSON.stringify(usuarioActual));
+  mostrarHome();
+}
+
+// ── HOME ──
+function getNivel(v) {
+  if (v >= 35) return { nombre: 'VIP', color: '#9b59b6', next: null, pct: 100 };
+  if (v >= 20) return { nombre: 'Diamante', color: '#2980b9', next: 35, pct: Math.round((v-20)/15*100) };
+  if (v >= 10) return { nombre: 'Oro', color: '#c8900a', next: 20, pct: Math.round((v-10)/10*100) };
+  if (v >= 5)  return { nombre: 'Plata', color: '#888', next: 10, pct: Math.round((v-5)/5*100) };
+  return { nombre: 'Bronce', color: '#b8956a', next: 5, pct: Math.round(v/5*100) };
+}
+
+async function mostrarHome() {
+  mostrarScreen('scrHome');
+  var u = usuarioActual;
+  document.getElementById('homeNombre').textContent = u.nombre + ' ' + (u.apellido || '');
+  document.getElementById('perfilNombre').textContent = u.nombre + ' ' + (u.apellido || '');
+  document.getElementById('perfilDni').textContent = u.dni;
+  document.getElementById('perfilTel').textContent = u.telefono || 'No cargado';
+  document.getElementById('perfilEmail').textContent = u.email || 'No cargado';
+
+  var nivel = getNivel(u.visitas || 0);
+  document.getElementById('fidelidadNivel').textContent = nivel.nombre;
+  document.getElementById('fidelidadNivel').style.color = nivel.color;
+  document.getElementById('fidelidadBarra').style.width = nivel.pct + '%';
+  document.getElementById('fidelidadBarra').style.background = nivel.color;
+  document.getElementById('fidelidadVisitas').textContent = (u.visitas || 0) + ' visitas';
+  document.getElementById('perfilNivel').textContent = nivel.nombre + ' — ' + (u.visitas||0) + ' visitas';
+  if (nivel.next) {
+    document.getElementById('fidelidadProximo').textContent = (nivel.next - (u.visitas||0)) + ' para ' + getNivel(nivel.next).nombre;
+  }
+  document.getElementById('fidelidadPuntos').textContent = 'Puntos acumulados: ' + (u.puntos_fidelidad || 0);
+
+  cargarTurnos();
+}
+
+async function cargarTurnos() {
+  var lista = document.getElementById('turnosList');
+  lista.innerHTML = '<div class="loader">Cargando turnos...</div>';
+
+  var turnos = await supa('turnos?usuario_id=eq.' + usuarioActual.id + '&order=fecha.desc&limit=20');
+
+  // Proximo turno
+  var hoy = new Date().toISOString().split('T')[0];
+  var proximos = (turnos||[]).filter(function(t) { return t.fecha >= hoy && t.estado !== 'cancelado'; });
+  if (proximos.length > 0) {
+    var p = proximos[proximos.length - 1];
+    document.getElementById('proximoFecha').textContent = formatFecha(p.fecha);
+    document.getElementById('proximoServicio').textContent = p.servicio;
+    document.getElementById('proximoHora').textContent = p.hora + ' hs — con ' + p.especialista;
+    var el = document.getElementById('proximoEstado');
+    el.textContent = p.estado;
+    el.className = 'proximo-estado ' + p.estado;
+    el.style.background = p.estado === 'confirmado' ? '#f0faf0' : '#fdf6ee';
+    el.style.color = p.estado === 'confirmado' ? '#2d7a2d' : '#b8956a';
+    document.getElementById('proximoWrap').style.display = 'block';
+  }
+
+  if (!turnos || turnos.length === 0) {
+    lista.innerHTML = '<div class="empty"><div class="empty-ico">📅</div><div class="empty-txt">Todavía no tenés turnos registrados.<br>Reservá desde nuestra página.</div></div>';
+    return;
+  }
+
+  lista.innerHTML = turnos.map(function(t) {
+    return '<div class="turno-item ' + t.estado + '">' +
+      '<div class="turno-fecha">' + formatFecha(t.fecha) + '</div>' +
+      '<div class="turno-servicio">' + t.servicio + '</div>' +
+      '<div class="turno-esp">Con ' + t.especialista + ' — ' + t.hora + ' hs</div>' +
+      '<span class="turno-estado ' + t.estado + '">' + t.estado + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function formatFecha(f) {
+  if (!f) return '';
+  var d = new Date(f + 'T12:00:00');
+  return d.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
+}
+
+function cambiarTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('activa'); });
+  document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('activa'); });
+  btn.classList.add('activa');
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('activa');
+}
+
+function cerrarSesion() {
+  usuarioActual = null;
+  localStorage.removeItem('ss_usuario');
+  mostrarLogin();
+}
+
+// ── PWA INSTALL ──
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('ss_banner_cerrado')) {
+    setTimeout(function() { document.getElementById('installarBanner').classList.add('show'); }, 2000);
+  }
+});
+
+document.getElementById('installarBtn').addEventListener('click', function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function() { cerrarBanner(); });
+  }
+});
+
+function cerrarBanner() {
+  document.getElementById('installarBanner').classList.remove('show');
+  localStorage.setItem('ss_banner_cerrado', '1');
+}
+
+// ── INIT ──
+window.addEventListener('load', function() {
+  var guardado = localStorage.getItem('ss_usuario');
+  if (guardado) {
+    try {
+      usuarioActual = JSON.parse(guardado);
+      mostrarHome();
+    } catch(e) { mostrarLogin(); }
+  } else {
+    mostrarLogin();
+  }
+});
+</script>
+</body>
+</html>

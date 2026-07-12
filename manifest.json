@@ -1,0 +1,22 @@
+{
+  "name": "Skin Salta",
+  "short_name": "Skin Salta",
+  "description": "Tu espacio de belleza en Salta Capital",
+  "start_url": "/clientas.html",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
