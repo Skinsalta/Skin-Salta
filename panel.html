@@ -442,7 +442,7 @@ async function handleLogin(){
   var pass=document.getElementById('loginPass').value;
   var err=document.getElementById('loginErr');
   err.style.display='none';
-  if(!email||!pass){err.textContent='Completá email y contraseña';err.style.display='block';return;}
+  if(!email||!pass){err.textContent='Completa email y contrasena';err.style.display='block';return;}
 
   var r=await fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
     method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
@@ -456,7 +456,7 @@ async function handleLogin(){
 
   // Buscar lashista
   var ls=await supa('lashistas?usuario_id=eq.'+data.user.id+'&select=*&limit=1');
-  if(!ls||ls.length===0){err.textContent='No tenés acceso al panel profesional';err.style.display='block';return;}
+  if(!ls||ls.length===0){err.textContent='No tenes acceso al panel profesional';err.style.display='block';return;}
   sesion.lashista=ls[0];
 
   localStorage.setItem('panel_sesion',JSON.stringify(sesion));
@@ -638,7 +638,7 @@ async function confirmarTurno(id){
   var monto=pr&&pr[0]?pr[0].precio:0;
   await supa('turnos?id=eq.'+id,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({estado:'confirmado',monto:monto,cobrado:monto>0})});
   cargarTodo();
-  alert('Turno confirmado'+(monto?' — $'+monto:''));
+  alert('Turno confirmado'+(monto?' - $'+monto:''));
 }
 
 async function rechazarTurno(id){
@@ -720,12 +720,12 @@ function selecClientaSol(id,label){
 }
 
 async function enviarSolicitud(){
-  if(!solClientaSelId){alert('Seleccioná una clienta');return;}
+  if(!solClientaSelId){alert('Selecciona una clienta');return;}
   var srv=document.getElementById('solServicio').value;
   var fecha=document.getElementById('solFecha').value;
   var hora=document.getElementById('solHora').value;
   var notas=document.getElementById('solNotas').value;
-  if(!srv||!fecha||!hora){alert('Completá servicio, fecha y horario');return;}
+  if(!srv||!fecha||!hora){alert('Completa servicio, fecha y horario');return;}
   await supa('turnos',{method:'POST',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({usuario_id:solClientaSelId,fecha:fecha,hora:hora,servicio:srv,especialista:sesion.lashista.nombre,estado:'pendiente',notas:notas||'Solicitud de '+sesion.lashista.nombre})});
   cerrarModal('modalSolicitud');
   solClientaSelId=null;
@@ -786,7 +786,7 @@ function setFiltroFin(f,btn){
   cargarFinanzas();
 }
 
-// NAVEGACIÓN
+// NAVEGACION
 function irA(pagina){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('activa');});
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('activo');});
@@ -840,7 +840,7 @@ function editarPrecio(id,srv,precio){
 async function guardarPrecio(){
   var srv=document.getElementById('precioServicio').value;
   var monto=parseFloat(document.getElementById('precioMonto').value)||0;
-  if(!srv||!monto){alert('Completá servicio y precio');return;}
+  if(!srv||!monto){alert('Completa servicio y precio');return;}
   if(editandoPrecioId){
     await supa('precios_servicios?id=eq.'+editandoPrecioId,{method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),body:JSON.stringify({servicio:srv,precio:monto})});
   } else {
@@ -925,7 +925,7 @@ async function eliminarProducto(id){
   cargarProductos();
 }
 
-// SESIÓN
+// SESION
 function cerrarSesion(){
   sesion={user:null,lashista:null};
   localStorage.removeItem('panel_sesion');
