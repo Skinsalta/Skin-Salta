@@ -873,21 +873,31 @@ async function cargarProductos(){
 
 function renderProductos(lista){
   var c=document.getElementById('productosList');
-  if(!lista||lista.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin productos. Agregá el primero.</div></div>';return;}
-  c.innerHTML='<div style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
-    lista.map(function(p){
-      var alerta=p.stock_actual<=p.stock_minimo;
-      return '<div class="fin-row" style="padding:12px 16px;border-left:3px solid '+(alerta?'#c0392b':'transparent')+'">'
-        +'<div>'
-        +'<div style="font-size:.95rem;color:var(--blk);margin-bottom:2px">'+p.nombre+'</div>'
-        +'<div style="font-size:.75rem;color:var(--muted)">Costo: $'+p.precio_costo+' · Venta: $'+p.precio_venta+' · Stock: <span style="color:'+(alerta?'#c0392b':'#2d7a2d')+'">'+p.stock_actual+'</span>'+(alerta?' ⚠ Reponer':'')+'</div>'
-        +'</div>'
-        +'<div style="display:flex;gap:8px">'
-        +'<button onclick="venderProducto(''+p.id+'',''+p.nombre+'','+p.precio_venta+','+p.stock_actual+')" style="background:var(--gold);color:#000;border:none;padding:6px 12px;cursor:pointer;font-size:.75rem;font-weight:600">Vender</button>'
-        +'<button onclick="eliminarProducto(''+p.id+'')" style="background:none;border:1px solid #ddd;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:.75rem">X</button>'
-        +'</div></div>';
-    }).join('')
-    +'</div>';
+  c.innerHTML='';
+  if(!lista||lista.length===0){c.innerHTML='<div class="empty"><div class="empty-txt">Sin productos.</div></div>';return;}
+  var wrap=document.createElement('div');
+  wrap.style.cssText='background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)';
+  lista.forEach(function(p){
+    var alerta=p.stock_actual<=p.stock_minimo;
+    var row=document.createElement('div');
+    row.className='fin-row';
+    row.style.cssText='padding:12px 16px;border-left:3px solid '+(alerta?'#c0392b':'transparent');
+    var info=document.createElement('div');
+    var nom=document.createElement('div');nom.style.cssText='font-size:.95rem;color:var(--blk);margin-bottom:2px';nom.textContent=p.nombre;
+    var det=document.createElement('div');det.style.cssText='font-size:.75rem;color:var(--muted)';
+    det.textContent='Costo: $'+p.precio_costo+' - Venta: $'+p.precio_venta+' - Stock: '+p.stock_actual+(alerta?' - Reponer':'');
+    if(alerta)det.style.color='#c0392b';
+    info.appendChild(nom);info.appendChild(det);
+    var acts=document.createElement('div');acts.style.cssText='display:flex;gap:8px';
+    var bv=document.createElement('button');bv.textContent='Vender';bv.style.cssText='background:var(--gold);color:#000;border:none;padding:6px 12px;cursor:pointer;font-size:.75rem;font-weight:600';
+    bv.addEventListener('click',function(){venderProducto(p.id,p.nombre,p.precio_venta,p.stock_actual);});
+    var bd=document.createElement('button');bd.textContent='X';bd.style.cssText='background:none;border:1px solid #ddd;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:.75rem';
+    bd.addEventListener('click',function(){eliminarProducto(p.id);});
+    acts.appendChild(bv);acts.appendChild(bd);
+    row.appendChild(info);row.appendChild(acts);
+    wrap.appendChild(row);
+  });
+  c.appendChild(wrap);
 }
 
 function buscarProductos(q){
