@@ -887,7 +887,7 @@ async function cargarFin(){
   else if(finFiltro==='semana'){ var d=new Date(); d.setDate(d.getDate()-7); desde=d.toISOString().split('T')[0]; hasta=hoyStr; }
   else{ var d2=new Date(); var pd=new Date(d2.getFullYear(),d2.getMonth(),1); var ud=new Date(d2.getFullYear(),d2.getMonth()+1,0); desde=pd.toISOString().split('T')[0]; hasta=ud.toISOString().split('T')[0]; }
 
-  var qt='turnos?cobrado=eq.true&select=monto,especialista,servicio&fecha=gte.'+desde+'&fecha=lte.'+hasta;
+  var qt='turnos?estado=eq.confirmado&select=monto,especialista,servicio&fecha=gte.'+desde+'&fecha=lte.'+hasta;
   var qg='gastos?select=monto,descripcion&fecha=gte.'+desde+'&fecha=lte.'+hasta;
   var qv='ventas_productos?select=cantidad,precio_venta,productos(nombre,precio_costo)&fecha=gte.'+desde+'&fecha=lte.'+hasta;
   var ql='lashistas?select=id,nombre&order=nombre.asc';
