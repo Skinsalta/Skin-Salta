@@ -152,24 +152,50 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
 .rv.in{opacity:1;transform:none}
 .rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
 @media(max-width:768px){
-  #nav{padding:.9rem 1.25rem}#nav.s{padding:.75rem 1.25rem}
-  .nm{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--w);flex-direction:column;justify-content:center;align-items:center;gap:2rem;z-index:199}
-  .nm.open{display:flex}.nm li{border:none}.nm a{font-size:1rem;letter-spacing:.08em}
-  .nt{display:block;position:relative;z-index:200}
-  .hero{padding:5.5rem 1.25rem 4rem}.hero h1{font-size:2.6rem}.hero p{font-size:.9rem}
-  .hero-stats{gap:1.75rem;flex-wrap:wrap}
+  #nav{padding:.85rem 1.25rem}
+  #nav.s{padding:.7rem 1.25rem}
+  .nt{display:block;position:relative;z-index:200;font-size:1.3rem;padding:8px}
+  .nm{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,15,15,.97);flex-direction:column;justify-content:center;align-items:center;gap:2.5rem;z-index:199;backdrop-filter:blur(8px)}
+  .nm.open{display:flex}
+  .nm li{border:none;width:100%;text-align:center}
+  .nm a{font-size:1.1rem;letter-spacing:.06em;color:rgba(255,255,255,.7)!important;padding:8px 0;display:block}
+  .nm a:hover{color:#fff!important}
+  .nm a[style*="color"]{color:var(--g)!important}
+  .nm .na{background:var(--g)!important;color:#000!important;display:inline-block;padding:.75rem 2rem;width:auto}
+  .nm-close{position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.5);font-size:2rem;cursor:pointer;z-index:201;line-height:1;padding:8px}
+  .hero{padding:5rem 1.25rem 3.5rem}
+  .hero h1{font-size:2.4rem}
+  .hero p{font-size:.88rem;margin-bottom:2rem}
+  .hero-stats{gap:1.5rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:2rem}
+  .stat-n{font-size:1.6rem}
+  .stat-sep{display:none}
   .srv-grid{grid-template-columns:1fr 1fr}
-  .gal-grid{grid-template-columns:1fr 1fr;grid-template-rows:220px 220px 220px}
+  .srv-card{padding:1.5rem 1.25rem}
+  .gal-grid{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}
   .gal-item:nth-child(1){grid-row:span 1}
-  .agenda-inner{grid-template-columns:1fr;gap:3rem}
-  .nos-inner{grid-template-columns:1fr;gap:3rem}.nos-img img{height:340px}.nos-badge{bottom:-1rem;right:.5rem;padding:1rem 1.5rem}
-  .pol-grid{grid-template-columns:1fr}.ft-top{grid-template-columns:1fr;gap:2rem}.ft-bot{flex-direction:column;text-align:center}
-  .fg{grid-template-columns:1fr}.fi.fu{grid-column:span 1}
+  .agenda-inner{grid-template-columns:1fr;gap:2rem}
+  .form-agenda{padding:1.5rem}
+  .fg{grid-template-columns:1fr}
+  .fi.fu{grid-column:span 1}
+  .fi input,.fi select,.fi textarea{font-size:16px!important;padding:.75rem 1rem}
+  #btnSubmit{padding:1rem;font-size:.8rem}
+  .nos-inner{grid-template-columns:1fr;gap:2rem}
+  .nos-img img{height:300px}
+  .nos-badge{bottom:-1rem;right:.75rem;padding:1rem 1.5rem}
+  .pol-grid{grid-template-columns:1fr}
+  .ft-top{grid-template-columns:1fr;gap:1.75rem}
+  .ft-bot{flex-direction:column;text-align:center;gap:.75rem}
 }
 @media(max-width:480px){
-  .hero h1{font-size:2.1rem}.srv-grid{grid-template-columns:1fr}
-  .gal-grid{grid-template-columns:1fr;grid-template-rows:auto}.gal-item{height:260px}.gal-item:nth-child(1){grid-row:span 1}
-  .hero-btns{flex-direction:column;align-items:center}.btn-hero-dark,.btn-hero-outline{width:100%;text-align:center}
+  .hero h1{font-size:2rem}
+  .hero-btns{flex-direction:column;align-items:stretch}
+  .btn-hero-dark,.btn-hero-outline{width:100%;text-align:center;padding:.85rem 1.5rem}
+  .srv-grid{grid-template-columns:1fr}
+  .srv-card{padding:1.25rem 1rem}
+  .gal-grid{grid-template-columns:1fr;grid-template-rows:auto}
+  .gal-item{height:240px}
+  .gal-item:nth-child(1){grid-row:span 1}
+  .stat-sep{display:none}
 }
 </style>
 </head>
@@ -178,16 +204,15 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
 <nav id="nav">
   <a class="nl" href="/">Skin Salta</a>
   <ul class="nm" id="nm">
-    <li><a href="#servicios">Servicios</a></li>
-    <li><a href="#galeria">Galería</a></li>
-    <li><a href="#nosotras">Nosotras</a></li>
-    <li><a href="#agenda">Turnos</a></li>
-    <li><a href="curso" style="color:var(--g)">Cursos</a></li>
-    <li><a href="clientas.html" style="color:var(--g)">Mi cuenta</a></li>
-    <li><a href="panel.html" style="color:var(--g)">Panel</a></li>
-    <li><a href="#agenda" class="na">Reservar</a></li>
+    <button class="nm-close" onclick="cerrarMenu()" aria-label="Cerrar menu">&#x2715;</button>
+    <li><a href="#servicios" onclick="cerrarMenu()">Servicios</a></li>
+    <li><a href="#galeria" onclick="cerrarMenu()">Galería</a></li>
+    <li><a href="#nosotras" onclick="cerrarMenu()">Nosotras</a></li>
+    <li><a href="tienda.html" onclick="cerrarMenu()">Tienda</a></li>
+    <li><a href="clientas.html" onclick="cerrarMenu()">Mi cuenta</a></li>
+    <li><a href="#agenda" onclick="cerrarMenu()" class="na">Reservar turno</a></li>
   </ul>
-  <button class="nt" id="nt" onclick="document.getElementById('nm').classList.toggle('open');this.innerHTML=document.getElementById('nm').classList.contains('open')?'&#x2715;':'&#9776; Men&uacute;'">&#9776; Men&uacute;</button>
+  <button class="nt" id="nt" onclick="abrirMenu()" aria-label="Abrir menu">&#9776;</button>
 </nav>
 
 <section class="hero" id="i">
@@ -355,6 +380,15 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
   </div>
 </section>
 
+<section style="padding:5rem 1.5rem;background:var(--w3);text-align:center">
+  <div style="max-width:1000px;margin:0 auto">
+    <div class="sec-tag" style="justify-content:center">Tienda online</div>
+    <h2 class="sec-h" style="margin:1rem 0">Productos para tu <em>belleza</em></h2>
+    <p style="font-size:.92rem;color:var(--muted);line-height:1.9;margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto">Productos de belleza, cuidado personal e insumos profesionales disponibles para compra con envio o retiro en salon.</p>
+    <a href="tienda.html" style="display:inline-block;background:var(--blk);color:var(--w);padding:.9rem 2.5rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;font-weight:500">Ver tienda</a>
+  </div>
+</section>
+
 <section style="padding:5rem 1.5rem;background:var(--blk);text-align:center">
   <div style="max-width:600px;margin:0 auto">
     <div class="sec-tag" style="justify-content:center;color:var(--g)">Para nuestras clientas</div>
@@ -444,10 +478,23 @@ var SUPA_URL='https://ltyfmxbcirakujtkemjb.supabase.co';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0eWZteGJjaXJha3VqdGtlbWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjM3ODQsImV4cCI6MjA5NjMzOTc4NH0.kIw04WoYF62wqSVPE8I6mmn4cVQ0IqunzjMtAC6BXEc';
 
 window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('s',window.scrollY>50);},{passive:true});
+
+function abrirMenu(){
+  document.getElementById('nm').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function cerrarMenu(){
+  document.getElementById('nm').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('nt').innerHTML='&#9776;';
+}
+document.getElementById('nm').addEventListener('click',function(e){
+  if(e.target===this) cerrarMenu();
+});
 function rv(){document.querySelectorAll('.rv').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight-60)el.classList.add('in');});}
 window.addEventListener('scroll',rv,{passive:true});
 window.addEventListener('load',rv);
-document.querySelectorAll('#nm a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('nm').classList.remove('open');document.getElementById('nt').innerHTML='&#9776; Men&uacute;';});});
+
 
 async function guardarEnSupabase(datos, gasId) {
   try {
