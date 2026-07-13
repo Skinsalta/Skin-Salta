@@ -131,16 +131,28 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 .reserva-btn:active{background:var(--gold);color:var(--blk)}
 
 /* MOBILE OPTIMIZATIONS */
-input{font-size:16px!important} /* evita zoom en iOS */
-.login-content{padding:28px 24px 40px}
+/* MOBILE OPTIMO */
+*{-webkit-tap-highlight-color:transparent}
+input,select,textarea{font-size:16px!important}
+.login-content{padding:24px 20px max(40px,env(safe-area-inset-bottom,40px))}
 .fidelidad-card{border-radius:0}
-
-/* Scroll suave en home */
 #scrHome{-webkit-overflow-scrolling:touch}
-
-/* Safe area para iPhone con notch */
-.home-header{padding-top:max(52px,env(safe-area-inset-top,52px))}
+.home-header{padding-top:max(56px,env(safe-area-inset-top,56px))}
 .instalar-banner{padding-bottom:max(14px,env(safe-area-inset-bottom,14px))}
+.tabs-wrap{position:sticky;top:0}
+
+/* Turno cards mas grandes en mobile */
+.turno-item{padding:16px;margin-bottom:10px}
+.turno-fecha{font-size:.8rem}
+.turno-servicio{font-size:1rem}
+
+/* Botones touch-friendly */
+.login-btn{padding:18px;font-size:.85rem}
+.reserva-btn{padding:18px}
+
+/* Fidelidad card legible */
+.fidelidad-nivel{font-size:1.8rem}
+.fidelidad-visitas{font-size:.8rem}
 
 @media(min-width:480px){
   .login-content,.reg-content{max-width:420px;margin:0 auto}
