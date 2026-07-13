@@ -15,7 +15,8 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 /* LOGIN */
 #scrLogin{position:fixed;inset:0;background:var(--blk);display:flex;flex-direction:column;justify-content:flex-end;z-index:100}
 .login-bg{position:absolute;inset:0;background:url('imagenes/pelo-por-pelo.jpg') center/cover;opacity:.2}
-.login-box{position:relative;z-index:1;padding:32px 28px 52px;max-width:440px;width:100%}
+.login-box{position:relative;z-index:1;padding:28px 24px max(52px,env(safe-area-inset-bottom,52px));max-width:440px;width:100%}
+@media(max-width:480px){.login-box{padding:24px 20px 40px}}
 .login-logo{width:120px;margin-bottom:20px}
 .login-titulo{font-family:var(--serif);font-size:1.8rem;color:#fff;margin-bottom:6px}
 .login-sub{font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:28px}
@@ -144,19 +145,37 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 /* MOBILE */
-.mob-nav{display:none;background:var(--blk);position:fixed;bottom:0;left:0;right:0;z-index:50}
-.mob-nav-i{display:flex;justify-content:space-around;padding:8px 0}
-.mob-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 12px;color:rgba(255,255,255,.35);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;font-family:var(--sans)}
+.mob-nav{display:none;background:var(--blk);position:fixed;bottom:0;left:0;right:0;z-index:50;box-shadow:0 -1px 0 rgba(255,255,255,.08);padding-bottom:env(safe-area-inset-bottom,0)}
+.mob-nav-i{display:flex;justify-content:space-around}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px 8px;color:rgba(255,255,255,.3);font-size:.55rem;letter-spacing:.04em;text-transform:uppercase;border:none;background:none;font-family:var(--sans);min-width:56px;transition:color .2s}
 .mob-btn.on{color:var(--gold)}
-.mob-ico{font-size:1.2rem}
+.mob-btn:active{opacity:.7}
+.mob-ico{font-size:1.4rem;line-height:1}
 
 @media(max-width:900px){
   .sidebar{display:none}
   .mob-nav{display:block}
-  .main{padding-bottom:70px}
-  .pg{padding:16px}
-  .cards{gap:8px}
+  .main{padding-bottom:80px}
+  .pg{padding:12px}
+  .pg-t{font-size:1.4rem}
+  .cards{gap:8px;flex-wrap:wrap}
+  .card{min-width:calc(50% - 4px);flex:none}
   .grid2{grid-template-columns:1fr}
+  .modal-box{padding:20px;margin:8px}
+  .modal-t{font-size:1.1rem}
+  .btn-p{padding:10px 16px;font-size:.72rem}
+  .tc{flex-direction:column}
+  .tc-ac{width:100%;height:3px}
+  .tc-b{padding:12px}
+  .list-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .list-acts{width:100%;justify-content:flex-end}
+  .fin-row{flex-wrap:wrap;gap:4px}
+  input[type=number]{font-size:16px}
+}
+@media(max-width:480px){
+  .card{min-width:100%}
+  .pg-h{flex-direction:column;gap:8px}
+  .pg-h .btn-p{width:100%;text-align:center}
 }
 </style>
 </head>
@@ -382,7 +401,26 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
       </datalist>
     </div>
       <div class="fg"><label class="fl">Costo $</label><input type="number" class="fi" id="prCosto" placeholder="0" oninput="calcVenta()"></div>
-      <div class="fg"><label class="fl">Venta $ <small style="color:var(--muted)">(+20% auto)</small></label><input type="number" class="fi" id="prVenta" placeholder="0"></div>
+      <div class="fg" style="grid-column:span 2">
+      <label class="fl">Calculadora de precio de venta</label>
+      <div style="background:var(--w3);padding:14px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:end">
+        <div>
+          <div style="font-size:.6rem;color:var(--muted);margin-bottom:4px">Costo $</div>
+          <input type="number" class="fi" id="prCosto" placeholder="0" style="background:#fff" oninput="calcPrecio()">
+        </div>
+        <div style="padding-bottom:10px;color:var(--muted);font-size:1.2rem">+</div>
+        <div>
+          <div style="font-size:.6rem;color:var(--muted);margin-bottom:4px">Ganancia %</div>
+          <input type="number" class="fi" id="prPct" value="50" placeholder="50" style="background:#fff" oninput="calcPrecio()">
+        </div>
+        <div style="padding-bottom:10px;color:var(--muted);font-size:1.2rem">=</div>
+        <div>
+          <div style="font-size:.6rem;color:var(--gold);margin-bottom:4px;font-weight:600">Precio venta $</div>
+          <input type="number" class="fi" id="prVenta" placeholder="0" style="background:#fff;border-color:var(--gold)">
+        </div>
+      </div>
+      <div id="calcResultado" style="font-size:.78rem;color:var(--muted);margin-top:6px;padding:6px 10px;background:#fff;display:none"></div>
+    </div>
       <div class="fg"><label class="fl">Stock actual</label><input type="number" class="fi" id="prStock" placeholder="0"></div>
       <div class="fg"><label class="fl">Stock minimo</label><input type="number" class="fi" id="prMin" placeholder="0"></div>
     </div>
@@ -756,6 +794,18 @@ function renderProd(list){
 
 function buscarProd(q){ if(!q){renderProd(todosProductos);return;} renderProd(todosProductos.filter(function(p){return p.nombre.toLowerCase().includes(q.toLowerCase());})); }
 
+function calcPrecio(){
+  var costo=parseFloat(document.getElementById('prCosto').value)||0;
+  var pct=parseFloat(document.getElementById('prPct').value)||0;
+  if(costo>0&&pct>0){
+    var venta=Math.round(costo*(1+pct/100));
+    document.getElementById('prVenta').value=venta;
+    var gan=venta-costo;
+    document.getElementById('calcResultado').style.display='block';
+    document.getElementById('calcResultado').textContent='Costo $'+costo.toLocaleString()+' + '+pct+'% = Venta $'+venta.toLocaleString()+' (ganancia $'+gan.toLocaleString()+' por unidad)';
+  }
+}
+
 function calcVenta(){
   var costo=parseFloat(document.getElementById('prCosto').value)||0;
   if(costo>0) document.getElementById('prVenta').value=Math.ceil(costo*1.2);
@@ -807,7 +857,7 @@ async function guardarProd(){
   if(fotoUrl) data.foto_url=fotoUrl;
   await api('productos',{method:'POST',body:JSON.stringify(data)});
   cerrarModal('mProd');
-  ['prNom','prCat','prCosto','prVenta','prStock','prMin','prDesc'].forEach(function(id){document.getElementById(id).value='';});
+  ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('prTienda').value='';
   document.getElementById('prFoto').value='';
   document.getElementById('prFotoPreview').style.display='none';
@@ -835,20 +885,14 @@ async function cargarFin(){
   var hoyStr=dHoy();
   if(finFiltro==='hoy'){ desde=hoyStr; hasta=hoyStr; }
   else if(finFiltro==='semana'){ var d=new Date(); d.setDate(d.getDate()-7); desde=d.toISOString().split('T')[0]; hasta=hoyStr; }
-  else{
-    var d2=new Date();
-    var primerDia=new Date(d2.getFullYear(),d2.getMonth(),1);
-    var ultimoDia=new Date(d2.getFullYear(),d2.getMonth()+1,0);
-    desde=primerDia.toISOString().split('T')[0];
-    hasta=ultimoDia.toISOString().split('T')[0];
-  }
+  else{ var d2=new Date(); var pd=new Date(d2.getFullYear(),d2.getMonth(),1); var ud=new Date(d2.getFullYear(),d2.getMonth()+1,0); desde=pd.toISOString().split('T')[0]; hasta=ud.toISOString().split('T')[0]; }
 
-  var baseT='turnos?cobrado=eq.true&select=monto,especialista,servicio&fecha=gte.'+desde+'&fecha=lte.'+hasta;
-  var baseG='gastos?select=monto,descripcion&fecha=gte.'+desde+'&fecha=lte.'+hasta;
-  var baseV='ventas_productos?select=cantidad,precio_venta,lashista_id,productos(nombre,precio_costo)&fecha=gte.'+desde+'&fecha=lte.'+hasta;
-  var baseLash='lashistas?select=id,nombre&activo=eq.true';
+  var qt='turnos?cobrado=eq.true&select=monto,especialista,servicio&fecha=gte.'+desde+'&fecha=lte.'+hasta;
+  var qg='gastos?select=monto,descripcion&fecha=gte.'+desde+'&fecha=lte.'+hasta;
+  var qv='ventas_productos?select=cantidad,precio_venta,productos(nombre,precio_costo)&fecha=gte.'+desde+'&fecha=lte.'+hasta;
+  var ql='lashistas?select=id,nombre&order=nombre.asc';
 
-  var results=await Promise.all([api(baseT),api(baseG),api(baseV),api(baseLash)]);
+  var results=await Promise.all([api(qt),api(qg),api(qv),api(ql)]);
   var turnos=results[0]||[], gastos=results[1]||[], ventas=results[2]||[], lashistas=results[3]||[];
 
   var ingTotal=turnos.reduce(function(s,t){return s+(t.monto||0);},0);
@@ -858,49 +902,136 @@ async function cargarFin(){
   var ganNeta=ingTotal+ingProd-totalGastos;
 
   var c=document.getElementById('finContent');
+  c.innerHTML='';
 
   // Cards resumen
-  var cardsHtml='<div class="cards">'+
-    '<div class="card" style="border-top-color:#2d7a2d"><div class="card-l">Ingresos servicios</div><div class="card-v" style="color:#2d7a2d">$'+ingTotal.toLocaleString()+'</div></div>'+
-    '<div class="card" style="border-top-color:#2980b9"><div class="card-l">Ventas productos</div><div class="card-v" style="color:#2980b9">$'+ingProd.toLocaleString()+'</div></div>'+
-    '<div class="card" style="border-top-color:var(--red)"><div class="card-l">Gastos</div><div class="card-v" style="color:var(--red)">$'+totalGastos.toLocaleString()+'</div></div>'+
-    '<div class="card"><div class="card-l">Ganancia neta</div><div class="card-v">$'+ganNeta.toLocaleString()+'</div></div>'+
-    '</div>';
+  var cardsDiv=document.createElement('div');cardsDiv.className='cards';
+  var cards=[
+    {l:'Ingresos servicios',v:'$'+ingTotal.toLocaleString(),color:'#2d7a2d'},
+    {l:'Ventas productos',v:'$'+ingProd.toLocaleString(),color:'#2980b9'},
+    {l:'Gastos',v:'$'+totalGastos.toLocaleString(),color:'var(--red)'},
+    {l:'Ganancia neta',v:'$'+ganNeta.toLocaleString(),color:'var(--blk)'}
+  ];
+  cards.forEach(function(card){
+    var d=document.createElement('div');d.className='card';d.style.borderTopColor=card.color;
+    d.innerHTML='<div class="card-l">'+card.l+'</div><div class="card-v" style="color:'+card.color+'">'+card.v+'</div>';
+    cardsDiv.appendChild(d);
+  });
+  c.appendChild(cardsDiv);
 
-  // Desglose por lashista (20% comision)
-  var COMISION=0.20;
-  var lashistasHtml='<div style="background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:12px">'+
-    '<div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-weight:600">Servicios por lashista</div>';
+  // Comisiones por lashista
+  var comDiv=document.createElement('div');comDiv.style.cssText='background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:12px';
+  var comTitle=document.createElement('div');comTitle.style.cssText='font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center';
+  comTitle.innerHTML='Comisiones por lashista <span style="font-size:.7rem;color:var(--muted);font-weight:300;text-transform:none;letter-spacing:0">% ajustable por trabajadora</span>';
+  comDiv.appendChild(comTitle);
+
   lashistas.forEach(function(l){
     var ingL=turnos.filter(function(t){return t.especialista&&t.especialista.toLowerCase().includes(l.nombre.toLowerCase());}).reduce(function(s,t){return s+(t.monto||0);},0);
-    var comL=Math.round(ingL*COMISION);
-    if(ingL>0){
-      lashistasHtml+='<div class="fin-row">'+
-        '<div><div class="fin-key">'+l.nombre+'</div><div style="font-size:.72rem;color:var(--muted)">Comision 20%: $'+comL.toLocaleString()+'</div></div>'+
-        '<div class="fin-num">$'+ingL.toLocaleString()+'</div></div>';
-    }
+    var key='com_pct_'+l.id;
+    var pctGuardado=parseInt(localStorage.getItem(key)||'20');
+
+    var row=document.createElement('div');row.className='fin-row';row.style.cssText='padding:10px 0;align-items:center';
+    var info=document.createElement('div');
+    var nom=document.createElement('div');nom.style.cssText='font-size:.9rem;color:var(--blk);font-weight:500;margin-bottom:2px';nom.textContent=l.nombre;
+    var comResult=document.createElement('div');comResult.id='comRes_'+l.id;
+    comResult.style.cssText='font-size:.8rem;color:var(--green)';
+    comResult.textContent='$'+ingL.toLocaleString()+' × '+pctGuardado+'% = $'+Math.round(ingL*pctGuardado/100).toLocaleString();
+    info.appendChild(nom);info.appendChild(comResult);
+
+    var ctrl=document.createElement('div');ctrl.style.cssText='display:flex;align-items:center;gap:8px';
+    var pctInp=document.createElement('input');
+    pctInp.type='number';pctInp.min='0';pctInp.max='100';pctInp.value=pctGuardado;
+    pctInp.style.cssText='width:60px;padding:4px 8px;border:1px solid var(--w4);font-family:var(--sans);font-size:.85rem;text-align:center';
+    var pctLbl=document.createElement('span');pctLbl.style.cssText='font-size:.8rem;color:var(--muted)';pctLbl.textContent='%';
+    var pctBtn=document.createElement('button');pctBtn.textContent='OK';
+    pctBtn.style.cssText='background:var(--gold);color:#000;border:none;padding:4px 10px;font-size:.72rem;cursor:pointer;font-family:var(--sans)';
+    pctBtn.onclick=(function(lid,lingresos,lnombre){return function(){
+      var pct=parseInt(pctInp.value)||0;
+      localStorage.setItem('com_pct_'+lid,pct);
+      document.getElementById('comRes_'+lid).textContent='$'+lingresos.toLocaleString()+' x '+pct+'% = $'+Math.round(lingresos*pct/100).toLocaleString();
+    };})(l.id,ingL,l.nombre);
+
+    ctrl.appendChild(pctInp);ctrl.appendChild(pctLbl);ctrl.appendChild(pctBtn);
+    row.appendChild(info);row.appendChild(ctrl);
+    comDiv.appendChild(row);
   });
-  lashistasHtml+='</div>';
+  c.appendChild(comDiv);
 
-  // Desglose general
-  var desgHtml='<div style="background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
-    '<div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-weight:600">Resumen</div>'+
-    '<div class="fin-row"><div class="fin-key">Total servicios</div><div class="fin-num">$'+ingTotal.toLocaleString()+'</div></div>'+
-    '<div class="fin-row"><div class="fin-key">Ganancia productos</div><div class="fin-num">$'+ganProd.toLocaleString()+'</div></div>'+
-    '<div class="fin-row"><div class="fin-key">Gastos del salon</div><div class="fin-num" style="color:var(--red)">-$'+totalGastos.toLocaleString()+'</div></div>'+
-    '<div class="fin-row" style="border-bottom:none"><div class="fin-key" style="font-weight:600;color:var(--blk)">GANANCIA NETA</div><div class="fin-num" style="font-size:1.1rem">$'+ganNeta.toLocaleString()+'</div></div>'+
-    '</div>';
+  // Reinversion por tipo de servicio
+  var reinvDiv=document.createElement('div');reinvDiv.style.cssText='background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:12px';
+  var reinvTitle=document.createElement('div');reinvTitle.style.cssText='font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center';
+  reinvTitle.innerHTML='Reinversion por servicio <span style="font-size:.7rem;color:var(--muted);font-weight:300;text-transform:none;letter-spacing:0">% de lo recaudado</span>';
+  reinvDiv.appendChild(reinvTitle);
 
-  // Gastos listado
-  var gastosHtml='';
+  // Agrupar por servicio
+  var porSrv={};
+  turnos.forEach(function(t){
+    var srv=(t.servicio||'Sin servicio');
+    if(!porSrv[srv]) porSrv[srv]={total:0,cant:0};
+    porSrv[srv].total+=(t.monto||0);
+    porSrv[srv].cant++;
+  });
+
+  Object.keys(porSrv).sort().forEach(function(srv){
+    var d=porSrv[srv];
+    var key='reinv_pct_'+srv.replace(/\s/g,'_');
+    var pctR=parseInt(localStorage.getItem(key)||'10');
+    var row=document.createElement('div');row.className='fin-row';row.style.cssText='padding:10px 0;align-items:center';
+    var info=document.createElement('div');info.style.cssText='flex:1;min-width:0;margin-right:12px';
+    var srvNom=document.createElement('div');srvNom.style.cssText='font-size:.85rem;color:var(--blk);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';srvNom.textContent=srv+' ('+d.cant+')';
+    var srvRes=document.createElement('div');srvRes.id='reinvRes_'+key;
+    srvRes.style.cssText='font-size:.75rem;color:#2980b9';
+    srvRes.textContent='$'+d.total.toLocaleString()+' x '+pctR+'% = $'+Math.round(d.total*pctR/100).toLocaleString();
+    info.appendChild(srvNom);info.appendChild(srvRes);
+    var ctrl=document.createElement('div');ctrl.style.cssText='display:flex;align-items:center;gap:6px;flex-shrink:0';
+    var inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='100';inp.value=pctR;
+    inp.style.cssText='width:55px;padding:4px 6px;border:1px solid var(--w4);font-family:var(--sans);font-size:.85rem;text-align:center';
+    var lbl=document.createElement('span');lbl.style.cssText='font-size:.8rem;color:var(--muted)';lbl.textContent='%';
+    var btn=document.createElement('button');btn.textContent='OK';
+    btn.style.cssText='background:#2980b9;color:#fff;border:none;padding:4px 10px;font-size:.72rem;cursor:pointer;font-family:var(--sans)';
+    btn.onclick=(function(k,dtotal,resId){return function(){
+      var p=parseInt(inp.value)||0;
+      localStorage.setItem(k,p);
+      document.getElementById(resId).textContent='$'+dtotal.toLocaleString()+' x '+p+'% = $'+Math.round(dtotal*p/100).toLocaleString();
+    };})(key,d.total,'reinvRes_'+key);
+    ctrl.appendChild(inp);ctrl.appendChild(lbl);ctrl.appendChild(btn);
+    row.appendChild(info);row.appendChild(ctrl);reinvDiv.appendChild(row);
+  });
+  c.appendChild(reinvDiv);
+
+  // Resumen general
+  var desgDiv=document.createElement('div');desgDiv.style.cssText='background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:12px';
+  var rows=[
+    {k:'Total servicios cobrados',v:'$'+ingTotal.toLocaleString(),c:''},
+    {k:'Ganancia productos',v:'$'+ganProd.toLocaleString(),c:''},
+    {k:'Gastos del salon',v:'-$'+totalGastos.toLocaleString(),c:'var(--red)'},
+    {k:'GANANCIA NETA',v:'$'+ganNeta.toLocaleString(),c:'var(--blk)',bold:true}
+  ];
+  rows.forEach(function(r,i){
+    var row=document.createElement('div');row.className='fin-row';
+    if(i===rows.length-1) row.style.borderBottom='none';
+    var k=document.createElement('div');k.className='fin-key';k.textContent=r.k;
+    if(r.bold){k.style.fontWeight='600';k.style.color='var(--blk)';}
+    var v=document.createElement('div');v.className='fin-num';v.textContent=r.v;
+    if(r.c) v.style.color=r.c;
+    if(r.bold) v.style.fontSize='1.1rem';
+    row.appendChild(k);row.appendChild(v);desgDiv.appendChild(row);
+  });
+  c.appendChild(desgDiv);
+
+  // Gastos detalle
   if(gastos.length>0){
-    gastosHtml='<div style="background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-top:12px">'+
-      '<div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-weight:600">Detalle gastos</div>'+
-      gastos.map(function(g){return '<div class="fin-row"><div class="fin-key">'+(g.descripcion||'Gasto')+'</div><div class="fin-num" style="color:var(--red)">-$'+(g.monto||0).toLocaleString()+'</div></div>';}).join('')+
-      '</div>';
+    var gasDiv=document.createElement('div');gasDiv.style.cssText='background:#fff;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)';
+    var gt=document.createElement('div');gt.style.cssText='font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-weight:600';gt.textContent='Detalle de gastos';
+    gasDiv.appendChild(gt);
+    gastos.forEach(function(g){
+      var row=document.createElement('div');row.className='fin-row';
+      var k=document.createElement('div');k.className='fin-key';k.textContent=g.descripcion||'Gasto';
+      var v=document.createElement('div');v.className='fin-num';v.style.color='var(--red)';v.textContent='-$'+(g.monto||0).toLocaleString();
+      row.appendChild(k);row.appendChild(v);gasDiv.appendChild(row);
+    });
+    c.appendChild(gasDiv);
   }
-
-  c.innerHTML=cardsHtml+lashistasHtml+desgHtml+gastosHtml;
 }
 
 function setFin(f,btn){ finFiltro=f; document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('on');}); btn.classList.add('on'); cargarFin(); }
