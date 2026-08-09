@@ -834,14 +834,24 @@ async function guardarProd(){
   var fotoUrl=null;
   var fotoFile=document.getElementById('prFoto').files[0];
   if(fotoFile){
-    var ext=fotoFile.name.split('.').pop();
+    var ext=fotoFile.name.split('.').pop().toLowerCase();
     var fname='prod-'+Date.now()+'.'+ext;
-    var upR=await fetch('https://ltyfmxbcirakujtkemjb.supabase.co/storage/v1/object/productos/'+fname,{
-      method:'POST',
-      headers:{'apikey':SK,'Authorization':'Bearer '+ses.token,'Content-Type':fotoFile.type,'x-upsert':'true'},
-      body:fotoFile
-    });
-    if(upR.ok) fotoUrl=fname;
+    try{
+      var upR=await fetch(SU+'/storage/v1/object/productos/'+fname,{
+        method:'POST',
+        headers:{
+          'apikey':SK,
+          'Authorization':'Bearer '+SK,
+          'Content-Type':fotoFile.type,
+          'x-upsert':'true'
+        },
+        body:fotoFile
+      });
+      var upTxt=await upR.text();
+      console.log('Storage:',upR.status,upTxt);
+      if(upR.ok||upR.status===200||upR.status===201) fotoUrl=fname;
+      else{ console.error('Storage error:',upTxt); }
+    }catch(err){ console.error('Storage error:',err); }
   }
   var data={
     nombre:nom,
