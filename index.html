@@ -13,20 +13,30 @@
 :root{--blk:#0f0f0f;--blk2:#1a1a1a;--w:#ffffff;--w2:#fafaf9;--w3:#f5f2ee;--w4:#ece8e2;--g:#b8956a;--g2:#c9a97d;--g3:#8a6e4e;--text:#1a1a1a;--muted:#666;--light:#999;--serif:'Playfair Display',Georgia,serif;--sans:'Outfit',system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.25,.46,.45,.94)}
 html{scroll-behavior:smooth}
 body{background:var(--w);color:var(--text);font-family:var(--sans);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-#nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;transition:all .4s var(--ease2);background:rgba(0,0,0,.45);backdrop-filter:blur(8px)}
-#nav.s{background:rgba(255,255,255,.96);backdrop-filter:blur(20px);padding:.85rem 2rem;box-shadow:0 1px 0 rgba(0,0,0,.06)}
-.nl{font-family:var(--serif);font-size:1rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;text-decoration:none;transition:color .3s}
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(10,10,10,.6);backdrop-filter:blur(12px);transition:all .3s}
+#nav.s{background:rgba(255,255,255,.97);backdrop-filter:blur(20px);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.nl{font-family:var(--serif);font-size:1rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;text-decoration:none;transition:color .3s;z-index:501;position:relative}
 #nav.s .nl{color:var(--blk)}
-.nm{display:none;gap:2rem;list-style:none;align-items:center}
-.nm a{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s}
+/* MENU DESKTOP */
+.nm{list-style:none;display:flex;gap:1.75rem;align-items:center}
+.nm a{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.75);text-decoration:none;transition:color .2s;white-space:nowrap}
 .nm a:hover{color:#fff}
 #nav.s .nm a{color:var(--muted)}
 #nav.s .nm a:hover{color:var(--blk)}
-.na{background:var(--blk)!important;color:var(--w)!important;padding:.6rem 1.5rem;font-size:.65rem!important;letter-spacing:.1em!important;transition:background .2s!important}
+.na{background:var(--blk)!important;color:var(--w)!important;padding:.55rem 1.25rem}
 .na:hover{background:var(--g)!important}
-.nt{display:none;background:none;border:none;cursor:pointer;font-size:.8rem;color:#fff;padding:.25rem;letter-spacing:.05em;font-family:var(--sans);transition:color .3s}
-@media(min-width:769px){.nm{display:flex!important}}
+#nav.s .na{background:var(--blk)!important;color:#fff!important}
+/* BOTON MENU MOBILE */
+.nt{display:none;background:none;border:none;cursor:pointer;color:#fff;font-size:1.4rem;padding:8px;line-height:1;z-index:501;position:relative;transition:color .3s}
 #nav.s .nt{color:var(--blk)}
+/* OVERLAY MENU MOBILE */
+.nm-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.98);z-index:498;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.nm-overlay.open{display:flex}
+.nm-close-btn{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nm-overlay a{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;padding:14px 40px;width:100%;text-align:center;transition:all .2s;border-bottom:1px solid rgba(255,255,255,.06)}
+.nm-overlay a:hover,.nm-overlay a:active{color:#fff;background:rgba(255,255,255,.05)}
+.nm-overlay .na-mob{background:var(--g);color:#000!important;margin:20px 24px 0;text-align:center;display:block;padding:14px 40px;font-weight:600;border-bottom:none}
+
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 5rem;position:relative;background:var(--blk);overflow:hidden}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .hero-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:1}
@@ -155,7 +165,8 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
 @media(max-width:768px){
   #nav{padding:.85rem 1.25rem}
   #nav.s{padding:.7rem 1.25rem}
-  .nt{display:block;position:relative;z-index:200;font-size:1.3rem;padding:8px}
+  #nmDesktop{display:none!important}
+  .nt{display:block}
     .nm{display:none!important;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,.98);flex-direction:column;justify-content:center;align-items:center;gap:2rem;z-index:999}
   .nm.open{display:flex!important}
   .nm li{border:none;width:100%;text-align:center;list-style:none}
@@ -202,18 +213,30 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
 
 <nav id="nav">
   <a class="nl" href="/">Skin Salta</a>
-  <ul class="nm" id="nm">
-    <button class="nm-close" onclick="cerrarMenu()" aria-label="Cerrar menu">&#x2715;</button>
-    <li><a href="#servicios" onclick="cerrarMenu()">Servicios</a></li>
-    <li><a href="#galeria" onclick="cerrarMenu()">Galería</a></li>
-    <li><a href="#nosotras" onclick="cerrarMenu()">Nosotras</a></li>
-    <li><a href="tienda.html" onclick="cerrarMenu()">Tienda</a></li>
-    <li><a href="clientas.html" onclick="cerrarMenu()">Mi cuenta</a></li>
-    <li><a href="panel.html" onclick="cerrarMenu()" style="color:var(--g)">Panel profesional</a></li>
-    <li><a href="#agenda" onclick="cerrarMenu()" class="na">Reservar turno</a></li>
+  <!-- MENU DESKTOP -->
+  <ul class="nm" id="nmDesktop">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#nosotras">Nosotras</a></li>
+    <li><a href="tienda.html">Tienda</a></li>
+    <li><a href="clientas.html" style="color:var(--g2)">Mi cuenta</a></li>
+    <li><a href="#agenda" class="na">Reservar</a></li>
   </ul>
-  <button class="nt" id="nt" onclick="abrirMenu()" aria-label="Abrir menu">&#9776;</button>
+  <!-- BOTON HAMBURGUESA MOBILE -->
+  <button class="nt" id="ntBtn" onclick="abrirMenu()" aria-label="Menu">&#9776;</button>
 </nav>
+
+<!-- MENU MOBILE OVERLAY (fuera del nav) -->
+<div class="nm-overlay" id="nmOverlay">
+  <button class="nm-close-btn" onclick="cerrarMenu()">&#x2715;</button>
+  <a href="#servicios" onclick="cerrarMenu()">Servicios</a>
+  <a href="#galeria" onclick="cerrarMenu()">Galería</a>
+  <a href="#nosotras" onclick="cerrarMenu()">Nosotras</a>
+  <a href="tienda.html" onclick="cerrarMenu()">Tienda</a>
+  <a href="clientas.html" onclick="cerrarMenu()">Mi cuenta</a>
+  <a href="panel.html" onclick="cerrarMenu()">Panel profesional</a>
+  <a href="#agenda" onclick="cerrarMenu()" class="na-mob">Reservar turno</a>
+</div>
 
 <section class="hero" id="i">
   <video class="hero-video" autoplay muted loop playsinline poster="imagenes/pelo-por-pelo.jpg">
@@ -480,15 +503,14 @@ var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('s',window.scrollY>50);},{passive:true});
 
 function abrirMenu(){
-  document.getElementById('nm').classList.add('open');
+  document.getElementById('nmOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
 function cerrarMenu(){
-  document.getElementById('nm').classList.remove('open');
+  document.getElementById('nmOverlay').classList.remove('open');
   document.body.style.overflow='';
-  document.getElementById('nt').innerHTML='&#9776;';
 }
-document.getElementById('nm').addEventListener('click',function(e){
+document.getElementById('nmOverlay').addEventListener('click',function(e){
   if(e.target===this) cerrarMenu();
 });
 function rv(){document.querySelectorAll('.rv').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight-60)el.classList.add('in');});}
