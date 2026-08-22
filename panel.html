@@ -431,6 +431,23 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
         <option value="">No mostrar por ahora</option>
       </select>
     </div>
+    <div class="fg" style="grid-column:span 2">
+      <label class="fl" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="prTieneVar" onchange="toggleVariantes(this.checked)" style="width:16px;height:16px;accent-color:var(--gold)">
+        Este producto tiene variantes (medidas, colores, etc.)
+      </label>
+      <div id="variantesWrap" style="display:none;margin-top:12px;background:var(--w3);padding:14px;border-radius:4px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div><label class="fl">Label de variante</label>
+            <input class="fi" id="prVarLabel" placeholder="Ej: Medida, Color, Talle" value="Medida">
+          </div>
+          <div><label class="fl">Opciones (separadas por coma)</label>
+            <input class="fi" id="prVariantes" placeholder="Ej: 8mm, 10mm, 12mm, 14mm">
+          </div>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted)">La clienta va a elegir entre estas opciones al agregar al carrito</div>
+      </div>
+    </div>
     <div class="fg"><label class="fl">Foto del producto</label>
       <input type="file" class="fi" id="prFoto" accept="image/*" style="padding:8px">
       <div id="prFotoPreview" style="margin-top:8px;display:none"><img id="prFotoImg" style="width:80px;height:80px;object-fit:cover;border:1px solid var(--w4)"></div>
@@ -794,6 +811,10 @@ function renderProd(list){
 
 function buscarProd(q){ if(!q){renderProd(todosProductos);return;} renderProd(todosProductos.filter(function(p){return p.nombre.toLowerCase().includes(q.toLowerCase());})); }
 
+function toggleVariantes(show){
+  document.getElementById('variantesWrap').style.display=show?'block':'none';
+}
+
 function calcPrecio(){
   var costo=parseFloat(document.getElementById('prCosto').value)||0;
   var pct=parseFloat(document.getElementById('prPct').value)||0;
@@ -862,12 +883,17 @@ async function guardarProd(){
     stock_actual:parseInt(document.getElementById('prStock').value)||0,
     stock_minimo:parseInt(document.getElementById('prMin').value)||0,
     tienda_categoria:document.getElementById('prTienda').value||null,
+    tiene_variantes:document.getElementById('prTieneVar').checked,
+    variantes_label:document.getElementById('prVarLabel').value||'Medida',
+    variantes:document.getElementById('prVariantes').value||null,
     activo:true
   };
   if(fotoUrl) data.foto_url=fotoUrl;
   await api('productos',{method:'POST',body:JSON.stringify(data)});
   cerrarModal('mProd');
-  ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct'].forEach(function(id){document.getElementById(id).value='';});
+  ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct','prVariantes','prVarLabel'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('prTieneVar').checked=false;
+  document.getElementById('variantesWrap').style.display='none';
   document.getElementById('prTienda').value='';
   document.getElementById('prFoto').value='';
   document.getElementById('prFotoPreview').style.display='none';
