@@ -434,18 +434,20 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
     <div class="fg" style="grid-column:span 2">
       <label class="fl" style="display:flex;align-items:center;gap:8px;cursor:pointer">
         <input type="checkbox" id="prTieneVar" onchange="toggleVariantes(this.checked)" style="width:16px;height:16px;accent-color:var(--gold)">
-        Este producto tiene variantes (medidas, colores, etc.)
+        Este producto tiene variantes con stock individual (medidas, colores, talles)
       </label>
       <div id="variantesWrap" style="display:none;margin-top:12px;background:var(--w3);padding:14px;border-radius:4px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div><label class="fl">Label de variante</label>
-            <input class="fi" id="prVarLabel" placeholder="Ej: Medida, Color, Talle" value="Medida">
-          </div>
-          <div><label class="fl">Opciones (separadas por coma)</label>
-            <input class="fi" id="prVariantes" placeholder="Ej: 8mm, 10mm, 12mm, 14mm">
-          </div>
+        <div class="fg"><label class="fl">Nombre de la variante</label>
+          <input class="fi" id="prVarLabel" placeholder="Ej: Medida, Color, Talle" value="Medida" style="background:#fff">
         </div>
-        <div style="font-size:.72rem;color:var(--muted)">La clienta va a elegir entre estas opciones al agregar al carrito</div>
+        <div style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600">Agregar opciones con stock</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input class="fi" id="prVarNuevaOp" placeholder="Ej: 8mm" style="flex:1;background:#fff">
+          <input class="fi" id="prVarNuevoStock" type="number" placeholder="Stock" style="width:80px;background:#fff" value="0">
+          <button onclick="agregarVarianteRow()" style="background:var(--gold);color:#000;border:none;padding:8px 14px;cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:600;border-radius:4px;white-space:nowrap">+ Agregar</button>
+        </div>
+        <div id="prVarRows" style="display:flex;flex-direction:column;gap:6px"></div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:8px">Cada variante tiene su propio stock. El stock general del producto se ignora.</div>
       </div>
     </div>
     <div class="fg"><label class="fl">Foto del producto</label>
@@ -813,6 +815,47 @@ function buscarProd(q){ if(!q){renderProd(todosProductos);return;} renderProd(to
 
 function toggleVariantes(show){
   document.getElementById('variantesWrap').style.display=show?'block':'none';
+  if(!show) document.getElementById('prVarRows').innerHTML='';
+}
+
+var variantesActuales={};
+
+function agregarVarianteRow(){
+  var op=document.getElementById('prVarNuevaOp').value.trim();
+  var stock=parseInt(document.getElementById('prVarNuevoStock').value)||0;
+  if(!op){alert('Ingresa el nombre de la opcion');return;}
+  variantesActuales[op]=stock;
+  renderVarRows();
+  document.getElementById('prVarNuevaOp').value='';
+  document.getElementById('prVarNuevoStock').value='0';
+  document.getElementById('prVarNuevaOp').focus();
+}
+
+function renderVarRows(){
+  var c=document.getElementById('prVarRows');c.innerHTML='';
+  Object.keys(variantesActuales).forEach(function(op){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;background:#fff;padding:8px 12px;border-radius:4px;border:1px solid var(--w4)';
+    var nom=document.createElement('div');nom.style.cssText='flex:1;font-size:.85rem;font-weight:500';nom.textContent=op;
+    var stk=document.createElement('input');stk.type='number';stk.value=variantesActuales[op];
+    stk.style.cssText='width:70px;border:1px solid var(--w4);padding:4px 8px;font-family:var(--sans);font-size:.85rem;text-align:center;border-radius:4px';
+    stk.onchange=function(){variantesActuales[op]=parseInt(this.value)||0;};
+    var del=document.createElement('button');del.textContent='X';
+    del.style.cssText='background:none;border:none;color:#c0392b;cursor:pointer;font-size:.85rem;padding:4px';
+    del.onclick=function(){delete variantesActuales[op];renderVarRows();};
+    var lbl=document.createElement('span');lbl.style.cssText='font-size:.7rem;color:var(--muted)';lbl.textContent='stock';
+    row.appendChild(nom);row.appendChild(stk);row.appendChild(lbl);row.appendChild(del);
+    c.appendChild(row);
+  });
+}
+
+function resetVariantes(){
+  variantesActuales={};
+  document.getElementById('prVarRows').innerHTML='';
+  document.getElementById('prVarNuevaOp').value='';
+  document.getElementById('prVarNuevoStock').value='0';
+  document.getElementById('prVarLabel').value='Medida';
+  resetVariantes();
 }
 
 function calcPrecio(){
@@ -885,15 +928,14 @@ async function guardarProd(){
     tienda_categoria:document.getElementById('prTienda').value||null,
     tiene_variantes:document.getElementById('prTieneVar').checked,
     variantes_label:document.getElementById('prVarLabel').value||'Medida',
-    variantes:document.getElementById('prVariantes').value||null,
+    variantes_stock:document.getElementById('prTieneVar').checked&&Object.keys(variantesActuales).length?variantesActuales:null,
     activo:true
   };
   if(fotoUrl) data.foto_url=fotoUrl;
   await api('productos',{method:'POST',body:JSON.stringify(data)});
   cerrarModal('mProd');
-  ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct','prVariantes','prVarLabel'].forEach(function(id){document.getElementById(id).value='';});
-  document.getElementById('prTieneVar').checked=false;
-  document.getElementById('variantesWrap').style.display='none';
+  ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct'].forEach(function(id){document.getElementById(id).value='';});
+  resetVariantes();
   document.getElementById('prTienda').value='';
   document.getElementById('prFoto').value='';
   document.getElementById('prFotoPreview').style.display='none';
