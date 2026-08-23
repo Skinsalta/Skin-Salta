@@ -215,22 +215,35 @@ footer a{color:var(--g);text-decoration:none}
 <!-- CARRUSEL -->
 <div class="carrusel" id="carrusel">
   <div class="carrusel-track" id="carruselTrack">
+    <!-- SLIDE HERO -->
+    <div class="carrusel-slide" style="background:#f8f8f6;align-items:center;justify-content:space-between;padding:0 5%">
+      <div style="max-width:60%">
+        <div style="font-size:.72rem;color:var(--g);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:8px">Skin Salta</div>
+        <div style="font-family:var(--serif);font-size:clamp(1.4rem,4vw,2.2rem);color:var(--blk);line-height:1.2;margin-bottom:8px;font-weight:400">Los mejores precios de Salta</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.5">Skincare e insumos de pestanas 100% originales</div>
+        <button onclick="document.getElementById('prodGrid').scrollIntoView({behavior:'smooth'})" style="background:var(--w);color:var(--blk);border:1.5px solid var(--w4);padding:10px 20px;font-family:var(--sans);font-size:.78rem;cursor:pointer;border-radius:6px;font-weight:500">Ver productos</button>
+      </div>
+      <div style="font-size:clamp(4rem,10vw,7rem);opacity:.15;flex-shrink:0">&#128167;</div>
+    </div>
+    <!-- SLIDE FIBRAS -->
     <div class="carrusel-slide" style="background:var(--blk)">
-      <img class="carrusel-img" src="imagenes/pelo-por-pelo.jpg" alt="Fibras" onerror="this.style.display='none'">
+      <img class="carrusel-img" src="fibras_nagaraku.jpg" alt="Fibras Nagaraku" onerror="this.style.display='none'">
       <div class="carrusel-txt">
         <div class="carrusel-titulo">Fibras Nagaraku</div>
         <div class="carrusel-sub">Las mejores fibras para extensiones profesionales</div>
       </div>
     </div>
+    <!-- SLIDE ADHESIVOS -->
     <div class="carrusel-slide" style="background:#2a1a10">
-      <img class="carrusel-img" src="imagenes/lash-lifting.jpg" alt="Adhesivos" onerror="this.style.display='none'">
+      <img class="carrusel-img" src="adhesivo_gollee.jpg" alt="Adhesivo Gollee" onerror="this.style.display='none'">
       <div class="carrusel-txt">
         <div class="carrusel-titulo">Adhesivos profesionales</div>
         <div class="carrusel-sub">Gollee, Neicha, Clione — los mejores del mercado</div>
       </div>
     </div>
+    <!-- SLIDE ACCESORIOS -->
     <div class="carrusel-slide" style="background:#1a2a1a">
-      <img class="carrusel-img" src="imagenes/laminado.jpg" alt="Accesorios" onerror="this.style.display='none'">
+      <img class="carrusel-img" src="cepillitos.jpg" alt="Cepillitos" onerror="this.style.display='none'">
       <div class="carrusel-txt">
         <div class="carrusel-titulo">Accesorios y removedores</div>
         <div class="carrusel-sub">Todo lo que necesitas para tu trabajo diario</div>
@@ -773,7 +786,7 @@ function cerrarSesionTienda(){usuarioTienda=null;localStorage.removeItem('ss_usu
 
 // CARRUSEL
 var carruselIdx=0;
-var carruselTotal=3;
+var carruselTotal=4;
 var carruselTimer=null;
 
 function initCarrusel(){
