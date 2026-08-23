@@ -548,29 +548,92 @@ function cerrarCuenta(){
 function renderLoginCuenta(){
   var b=document.getElementById('cuentaBody');
   b.innerHTML='<div style="padding:8px 0">'
-    +'<div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6">Ingresa para ver tus pedidos</div>'
-    +'<label class="co-label">DNI</label>'
-    +'<input id="loginDniT" type="number" inputmode="numeric" placeholder="Sin puntos" class="co-inp">'
+    +'<div style="font-family:var(--serif);font-size:1.2rem;margin-bottom:6px">Bienvenida</div>'
+    +'<div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6">Ingresa con tu email para ver tus pedidos y datos</div>'
+    +'<label class="co-label">Email</label>'
+    +'<input id="loginEmailT" type="email" inputmode="email" placeholder="tu@email.com" class="co-inp" autocomplete="email">'
     +'<label class="co-label">Contrasena</label>'
-    +'<input id="loginPassT" type="password" placeholder="Tu contrasena (o tu DNI)" class="co-inp">'
-    +'<div id="loginErrT" class="login-err">DNI o contrasena incorrectos</div>'
+    +'<input id="loginPassT" type="password" placeholder="Tu contrasena" class="co-inp" autocomplete="current-password">'
+    +'<div id="loginErrT" class="login-err">Email o contrasena incorrectos</div>'
     +'<button onclick="doLoginTienda()" style="width:100%;background:var(--blk);color:#fff;border:none;padding:13px;font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px">Ingresar</button>'
-    +'<div style="text-align:center;font-size:.78rem;color:var(--muted)">No tenes cuenta? <a href="clientas.html" style="color:var(--g)">Crear una</a></div>'
+    +'<div style="text-align:center;font-size:.78rem;color:var(--muted);line-height:1.8">No tenes cuenta? <a href="clientas.html" style="color:var(--g)">Crear una</a><br>'
+    +'<a href="#" onclick="renderRegistroTienda()" style="color:var(--g)">Registrarse con email</a></div>'
+    +'</div>';
+}
+
+function renderRegistroTienda(){
+  var b=document.getElementById('cuentaBody');
+  b.innerHTML='<div style="padding:8px 0">'
+    +'<div style="font-family:var(--serif);font-size:1.2rem;margin-bottom:6px">Crear cuenta</div>'
+    +'<div style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Registrate para guardar tus pedidos</div>'
+    +'<label class="co-label">Nombre *</label>'
+    +'<input id="regNomT" type="text" placeholder="Tu nombre" class="co-inp">'
+    +'<label class="co-label">Email *</label>'
+    +'<input id="regEmailT" type="email" placeholder="tu@email.com" class="co-inp">'
+    +'<label class="co-label">Contrasena *</label>'
+    +'<input id="regPassT" type="password" placeholder="Minimo 6 caracteres" class="co-inp">'
+    +'<label class="co-label">WhatsApp</label>'
+    +'<input id="regWaT" type="tel" placeholder="3874123456" class="co-inp">'
+    +'<div id="regErrT" class="login-err"></div>'
+    +'<button onclick="doRegistroTienda()" style="width:100%;background:var(--blk);color:#fff;border:none;padding:13px;font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:10px">Crear cuenta</button>'
+    +'<button onclick="renderLoginCuenta()" style="width:100%;background:none;border:1px solid var(--w4);padding:11px;font-family:var(--sans);font-size:.78rem;color:var(--muted);cursor:pointer;border-radius:4px">Volver al login</button>'
     +'</div>';
 }
 
 async function doLoginTienda(){
-  var dni=document.getElementById('loginDniT').value.trim();
-  var pass=document.getElementById('loginPassT').value.trim();
+  var email=document.getElementById('loginEmailT').value.trim();
+  var pass=document.getElementById('loginPassT').value;
   var err=document.getElementById('loginErrT');err.style.display='none';
-  if(!dni){err.textContent='Ingresa tu DNI';err.style.display='block';return;}
-  var r=await fetch(SU+'/rest/v1/usuarios?dni=eq.'+encodeURIComponent(dni)+'&select=*&limit=1',{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
-  var data=await r.json();
-  if(!data||!data.length){err.textContent='No encontramos una cuenta con ese DNI';err.style.display='block';return;}
-  var u=data[0];
-  if(pass&&pass!==u.password_hash&&pass!==u.dni){err.textContent='Contrasena incorrecta';err.style.display='block';return;}
-  usuarioTienda=u;localStorage.setItem('ss_usuario_tienda',JSON.stringify(u));
-  renderCuentaLogueada();
+  if(!email||!pass){err.textContent='Completa email y contrasena';err.style.display='block';return;}
+  try{
+    var r=await fetch(SU+'/auth/v1/token?grant_type=password',{
+      method:'POST',
+      headers:{'apikey':SK,'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,password:pass})
+    });
+    var data=await r.json();
+    if(!data.access_token){err.textContent='Email o contrasena incorrectos';err.style.display='block';return;}
+    // Buscar datos del usuario en tabla usuarios
+    var ru=await fetch(SU+'/rest/v1/usuarios?email=eq.'+encodeURIComponent(email)+'&select=*&limit=1',{
+      headers:{'apikey':SK,'Authorization':'Bearer '+data.access_token}
+    });
+    var usuarios=await ru.json();
+    var u=usuarios&&usuarios.length?usuarios[0]:{nombre:email.split('@')[0],email:email,visitas:0};
+    u._token=data.access_token;
+    usuarioTienda=u;
+    localStorage.setItem('ss_usuario_tienda',JSON.stringify(u));
+    renderCuentaLogueada();
+  }catch(e){err.textContent='Error de conexion. Intenta de nuevo.';err.style.display='block';}
+}
+
+async function doRegistroTienda(){
+  var nom=document.getElementById('regNomT').value.trim();
+  var email=document.getElementById('regEmailT').value.trim();
+  var pass=document.getElementById('regPassT').value;
+  var wa=document.getElementById('regWaT').value.trim();
+  var err=document.getElementById('regErrT');err.style.display='none';
+  if(!nom||!email||!pass){err.textContent='Nombre, email y contrasena son obligatorios';err.style.display='block';return;}
+  if(pass.length<6){err.textContent='La contrasena debe tener al menos 6 caracteres';err.style.display='block';return;}
+  try{
+    // Crear usuario en Auth
+    var r=await fetch(SU+'/auth/v1/signup',{
+      method:'POST',
+      headers:{'apikey':SK,'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,password:pass})
+    });
+    var data=await r.json();
+    if(data.error){err.textContent=data.error.message||'Error al registrarse';err.style.display='block';return;}
+    // Crear en tabla usuarios
+    var tel=wa.replace(/\D/g,'');
+    await fetch(SU+'/rest/v1/usuarios',{
+      method:'POST',
+      headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({nombre:nom,email:email,telefono:tel,dni:tel||('web'+Date.now().toString().slice(-8)),password_hash:pass,nivel:'Bronce',visitas:0})
+    });
+    err.style.display='none';
+    alert('Cuenta creada! Revisa tu email para confirmar y luego ingresa.');
+    renderLoginCuenta();
+  }catch(e){err.textContent='Error al crear la cuenta';err.style.display='block';}
 }
 
 async function renderCuentaLogueada(){
