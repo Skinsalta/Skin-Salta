@@ -385,7 +385,7 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 <div class="modal" id="mProd">
   <div class="modal-box" style="max-width:600px">
     <button class="modal-x" onclick="cerrarModal('mProd')">&times;</button>
-    <div class="modal-t">Nuevo producto</div>
+    <div class="modal-t" id="mProdTitulo">Nuevo producto</div>
     <div class="grid2">
       <div class="fg"><label class="fl">Nombre *</label><input class="fi" id="prNom" placeholder="Nombre del producto"></div>
       <div class="fg"><label class="fl">Categoria</label>
@@ -789,10 +789,20 @@ function renderProd(list){
     var info=document.createElement('div');
     var nom=document.createElement('div');nom.style.cssText='font-size:.9rem;color:var(--blk);margin-bottom:2px';nom.textContent=p.nombre;
     var det=document.createElement('div');det.style.cssText='font-size:.75rem;color:var(--muted)';
-    det.textContent='Costo $'+p.precio_costo+' - Venta $'+p.precio_venta+' - Stock: '+p.stock_actual+(alerta?' - REPONER':'');
+    var stockTxt;
+    if(p.tiene_variantes&&p.variantes_stock){
+      var tots=Object.values(p.variantes_stock).reduce(function(s,v){return s+(v||0);},0);
+      stockTxt='Stock total: '+tots+' u (variantes)';
+    } else {
+      stockTxt='Stock: '+p.stock_actual+(alerta?' - REPONER':'');
+    }
+    det.textContent='Costo $'+p.precio_costo+' - Venta $'+p.precio_venta+' - '+stockTxt;
     if(alerta) det.style.color='var(--red)';
     info.appendChild(nom);info.appendChild(det);
     var acts=document.createElement('div');acts.className='list-acts';
+    var be2=document.createElement('button');be2.textContent='Editar';be2.style.cssText='background:none;border:1px solid var(--w4);padding:6px 10px;cursor:pointer;font-size:.72rem;color:var(--muted);border-radius:4px';
+    be2.onclick=function(){editarProd(p);};
+    acts.appendChild(be2);
     var bv=document.createElement('button');bv.className='btn-p';bv.textContent='Vender';bv.style.cssText='padding:6px 14px;font-size:.75rem';
     bv.onclick=function(){
       var cant=parseInt(window.prompt('Cantidad (stock: '+p.stock_actual+'):','1'));
@@ -895,7 +905,8 @@ async function guardarProd(){
   if(!nom){alert('El nombre es obligatorio');return;}
   var btn=document.getElementById('btnGuardarProd');
   btn.textContent='Guardando...';btn.disabled=true;
-  var fotoUrl=null;
+
+  var fotoUrl=editandoProdId?null:null;
   var fotoFile=document.getElementById('prFoto').files[0];
   if(fotoFile){
     var ext=fotoFile.name.split('.').pop().toLowerCase();
@@ -903,20 +914,27 @@ async function guardarProd(){
     try{
       var upR=await fetch(SU+'/storage/v1/object/productos/'+fname,{
         method:'POST',
-        headers:{
-          'apikey':SK,
-          'Authorization':'Bearer '+SK,
-          'Content-Type':fotoFile.type,
-          'x-upsert':'true'
-        },
+        headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':fotoFile.type,'x-upsert':'true'},
         body:fotoFile
       });
+      console.log('Storage status:',upR.status);
       var upTxt=await upR.text();
-      console.log('Storage:',upR.status,upTxt);
-      if(upR.ok||upR.status===200||upR.status===201) fotoUrl=fname;
-      else{ console.error('Storage error:',upTxt); }
-    }catch(err){ console.error('Storage error:',err); }
+      console.log('Storage resp:',upTxt);
+      // Aceptar 200, 201, o respuesta con Key en el body
+      if(upR.status===200||upR.status===201||upTxt.includes('Key')){
+        fotoUrl=fname;
+        console.log('Foto guardada como:',fname);
+      } else {
+        console.error('Storage error:',upTxt);
+        alert('Error al subir la foto: '+upR.status+'. El producto se guardara sin imagen.');
+      }
+    }catch(err){
+      console.error('Storage error:',err);
+    }
+  } else if(editandoProdId&&editandoFotoActual){
+    fotoUrl=editandoFotoActual;
   }
+
   var data={
     nombre:nom,
     categoria:document.getElementById('prCat').value,
@@ -932,7 +950,16 @@ async function guardarProd(){
     activo:true
   };
   if(fotoUrl) data.foto_url=fotoUrl;
-  await api('productos',{method:'POST',body:JSON.stringify(data)});
+
+  if(editandoProdId){
+    await api('productos?id=eq.'+editandoProdId,{method:'PATCH',body:JSON.stringify(data)});
+    editandoProdId=null;editandoFotoActual=null;
+    document.getElementById('mProdTitulo').textContent='Nuevo producto';
+    document.getElementById('btnGuardarProd').textContent='Guardar producto';
+  } else {
+    await api('productos',{method:'POST',body:JSON.stringify(data)});
+  }
+
   cerrarModal('mProd');
   ['prNom','prCat','prVenta','prStock','prMin','prDesc','prCosto','prPct'].forEach(function(id){document.getElementById(id).value='';});
   resetVariantes();
@@ -941,6 +968,38 @@ async function guardarProd(){
   document.getElementById('prFotoPreview').style.display='none';
   btn.textContent='Guardar producto';btn.disabled=false;
   cargarProd();
+  alert(fotoUrl?'Producto guardado con foto correctamente':'Producto guardado (sin foto)');
+}
+
+var editandoProdId=null;
+var editandoFotoActual=null;
+
+function editarProd(p){
+  editandoProdId=p.id;
+  editandoFotoActual=p.foto_url||null;
+  document.getElementById('mProdTitulo').textContent='Editar producto';
+  document.getElementById('prNom').value=p.nombre||'';
+  document.getElementById('prCat').value=p.categoria||'';
+  document.getElementById('prDesc').value=p.descripcion||'';
+  document.getElementById('prCosto').value=p.precio_costo||0;
+  document.getElementById('prVenta').value=p.precio_venta||0;
+  document.getElementById('prStock').value=p.stock_actual||0;
+  document.getElementById('prMin').value=p.stock_minimo||0;
+  document.getElementById('prTienda').value=p.tienda_categoria||'';
+  // Foto preview
+  if(p.foto_url){
+    document.getElementById('prFotoPreview').innerHTML='<img src="'+SU+'/storage/v1/object/public/productos/'+p.foto_url+'" style="width:80px;height:80px;object-fit:cover;border:1px solid var(--w4);border-radius:4px"> <span style="font-size:.75rem;color:var(--muted)">Foto actual (subir nueva para cambiar)</span>';
+    document.getElementById('prFotoPreview').style.display='block';
+  }
+  // Variantes
+  if(p.tiene_variantes&&p.variantes_stock){
+    document.getElementById('prTieneVar').checked=true;
+    document.getElementById('variantesWrap').style.display='block';
+    document.getElementById('prVarLabel').value=p.variantes_label||'Medida';
+    variantesActuales=Object.assign({},p.variantes_stock);
+    renderVarRows();
+  }
+  abrirModal('mProd');
 }
 
 // FINANZAS
