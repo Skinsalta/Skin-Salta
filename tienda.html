@@ -512,6 +512,18 @@ async function confirmarPedido(){
   try{
     await fetch(SU+'/rest/v1/pedidos',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({numero:nped,nombre:nom,whatsapp:wa,email:email||null,entrega:entrega,total:total,items:JSON.stringify(carrito),estado:'pendiente',fecha:new Date().toISOString().split('T')[0]})});
   }catch(e){console.log('DB error:',e);}
+
+  // Notificar Telegram via GAS
+  var GAS='https://script.google.com/macros/s/AKfycbzPo3mqlIrTR-dPtq7qo1hrPSNWRrCgPwNxu0UGwPlco3F1FOiUQr7WiZfVH8EvnrAiVA/exec';
+  var carritoStr=carrito.map(function(x){return x.nombre+' x'+x.cant;}).join(', ');
+  var tgMsg=String.fromCodePoint(128230)+' NUEVO PEDIDO TIENDA\n\n'
+    +String.fromCodePoint(128100)+' '+nom+'\n'
+    +String.fromCodePoint(128241)+' '+wa+'\n'
+    +String.fromCodePoint(128176)+' $'+total.toLocaleString()+'\n'
+    +String.fromCodePoint(128230)+' '+carritoStr+'\n'
+    +String.fromCodePoint(128205)+' '+(entrega==='envio'?'Envio a domicilio':'Retiro en salon')+'\n\n'
+    +'Pedido N: '+nped;
+  fetch(GAS+'?action=notificar&mensaje='+encodeURIComponent(tgMsg)).catch(function(){});
   // Guardar local
   var hist=JSON.parse(localStorage.getItem('ss_pedidos')||'[]');
   hist.push({numero:nped,nombre:nom,fecha:new Date().toLocaleDateString('es-AR'),total:total,items:carrito.slice()});
