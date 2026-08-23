@@ -475,6 +475,15 @@ function hdr(){ return {'apikey':SK,'Authorization':'Bearer '+(ses.token||SK),'C
 
 async function api(path, opts){
   var r = await fetch(SU+'/rest/v1/'+path, Object.assign({headers:hdr()}, opts||{}));
+  if(r.status===401){
+    // Token vencido - limpiar sesion
+    localStorage.removeItem('panel_ses');
+    ses={token:null,lashista:null};
+    document.getElementById('scrLogin').classList.remove('hidden');
+    document.getElementById('app').classList.remove('show');
+    alert('Tu sesion vencio. Por favor ingresa de nuevo.');
+    return [];
+  }
   if(r.status===204||r.status===201) return [];
   var t = await r.text();
   try{ return JSON.parse(t); } catch(e){ return []; }
@@ -865,7 +874,8 @@ function resetVariantes(){
   document.getElementById('prVarNuevaOp').value='';
   document.getElementById('prVarNuevoStock').value='0';
   document.getElementById('prVarLabel').value='Medida';
-  resetVariantes();
+  document.getElementById('prTieneVar').checked=false;
+  document.getElementById('variantesWrap').style.display='none';
 }
 
 function calcPrecio(){
