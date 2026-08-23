@@ -462,6 +462,8 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 var SU = 'https://ltyfmxbcirakujtkemjb.supabase.co';
 var SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0eWZteGJjaXJha3VqdGtlbWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjM3ODQsImV4cCI6MjA5NjMzOTc4NH0.kIw04WoYF62wqSVPE8I6mmn4cVQ0IqunzjMtAC6BXEc';
 var ses = {token:null, lashista:null};
+var editandoProdId=null;
+var editandoFotoActual=null;
 var calM = new Date().getMonth(), calY = new Date().getFullYear();
 var fechaSel = dHoy();
 var finFiltro = 'mes';
@@ -980,9 +982,6 @@ async function guardarProd(){
   cargarProd();
   alert(fotoUrl?'Producto guardado con foto correctamente':'Producto guardado (sin foto)');
 }
-
-var editandoProdId=null;
-var editandoFotoActual=null;
 
 function editarProd(p){
   editandoProdId=p.id;
