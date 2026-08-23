@@ -385,13 +385,13 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
 
 <!-- MODAL PRODUCTO -->
 <div class="modal" id="mProd">
-  <div class="modal-box" style="max-width:600px">
+  <div class="modal-box">
     <button class="modal-x" onclick="cerrarModal('mProd')">&times;</button>
     <div class="modal-t" id="mProdTitulo">Nuevo producto</div>
-    <div class="grid2">
-      <div class="fg"><label class="fl">Nombre *</label><input class="fi" id="prNom" placeholder="Nombre del producto"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:4px">
+      <div class="fg" style="grid-column:span 2"><label class="fl">Nombre *</label><input class="fi" id="prNom" placeholder="Nombre del producto"></div>
       <div class="fg"><label class="fl">Categoria</label>
-      <input class="fi" id="prCat" placeholder="Ej: Insumos Lashistas, Serums, Adhesivos" list="catSugg">
+      <input class="fi" id="prCat" placeholder="Ej: Fibras, Adhesivos" list="catSugg">
       <datalist id="catSugg">
         <option value="Insumos Lashistas">
         <option value="Serums y Tratamientos">
