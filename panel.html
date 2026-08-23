@@ -213,6 +213,7 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
       <div class="ni" data-pg="cli" onclick="go('cli')">Clientas</div>
       <div class="ni" data-pg="precios" id="niPrecios" onclick="go('precios')" style="display:none">Precios</div>
       <div class="ni" data-pg="prod" id="niProd" onclick="go('prod')" style="display:none">Productos</div>
+      <div class="ni" data-pg="pedidos" id="niPedidos" onclick="go('pedidos')" style="display:none">Pedidos <span class="bdg" id="bdgPed" style="display:none">0</span></div>
       <div class="ni" data-pg="fin" id="niFin" onclick="go('fin')" style="display:none">Finanzas</div>
     </nav>
     <div class="sb-foot">
@@ -295,6 +296,21 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
     </div>
   </div>
 
+    <!-- PEDIDOS -->
+    <div class="pg" id="pgPedidos">
+      <div class="pg-h">
+        <div><div class="pg-t">Pedidos</div><div class="pg-s">Pedidos de la tienda online</div></div>
+      </div>
+      <div class="filtros" id="pedFiltros">
+        <button class="fb on" onclick="setPedFiltro('todos',this)">Todos</button>
+        <button class="fb" onclick="setPedFiltro('pendiente',this)">Pendientes</button>
+        <button class="fb" onclick="setPedFiltro('confirmado',this)">Confirmados</button>
+      </div>
+      <div id="pedidosList"></div>
+    </div>
+
+  </div>
+
   <div class="mob-nav">
     <div class="mob-nav-i">
       <button class="mob-btn on" onclick="go('hoy')"><span class="mob-ico">&#128197;</span>Hoy</button>
@@ -302,6 +318,7 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
       <button class="mob-btn" onclick="go('sol')"><span class="mob-ico">&#9997;</span>Solicitudes</button>
       <button class="mob-btn" onclick="go('cli')"><span class="mob-ico">&#128100;</span>Clientas</button>
       <button class="mob-btn" id="mobFin" onclick="go('fin')" style="display:none"><span class="mob-ico">&#128200;</span>Finanzas</button>
+      <button class="mob-btn" id="mobPed" onclick="go('pedidos')" style="display:none"><span class="mob-ico">&#128230;</span>Pedidos</button>
     </div>
   </div>
 </div>
@@ -542,7 +559,9 @@ function iniciar(){
     document.getElementById('niPrecios').style.display='flex';
     document.getElementById('niProd').style.display='flex';
     document.getElementById('niFin').style.display='flex';
+    document.getElementById('niPedidos').style.display='flex';
     document.getElementById('mobFin').style.display='flex';
+    document.getElementById('mobPed').style.display='flex';
   }
   document.getElementById('scrLogin').classList.add('hidden');
   document.getElementById('app').classList.add('show');
@@ -1180,6 +1199,88 @@ async function cargarFin(){
     });
     c.appendChild(gasDiv);
   }
+}
+
+// PEDIDOS
+var pedFiltroActual='todos';
+
+async function cargarPedidos(){
+  var q='pedidos?order=created_at.desc&limit=50';
+  if(pedFiltroActual!=='todos') q+='&estado=eq.'+pedFiltroActual;
+  var data=await api(q)||[];
+
+  // Badge
+  var pend=data.filter(function(p){return p.estado==='pendiente';}).length;
+  var bdg=document.getElementById('bdgPed');
+  if(pend>0){bdg.textContent=pend;bdg.style.display='inline';}
+  else bdg.style.display='none';
+
+  var c=document.getElementById('pedidosList');c.innerHTML='';
+  if(!data.length){c.innerHTML='<div class="empty"><div class="empty-i">&#128230;</div><div>Sin pedidos todavia</div></div>';return;}
+
+  data.forEach(function(p){
+    var items=[];
+    try{items=typeof p.items==='string'?JSON.parse(p.items||'[]'):p.items||[];}catch(e){}
+    var color=p.estado==='confirmado'?'#2d7a2d':p.estado==='cancelado'?'#c0392b':'#b8956a';
+    var div=document.createElement('div');
+    div.style.cssText='background:#fff;padding:16px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);border-left:3px solid '+color;
+    div.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+      +'<div>'
+      +'<div style="font-size:.85rem;font-weight:600;color:var(--gold)">'+p.numero+'</div>'
+      +'<div style="font-size:.92rem;color:var(--blk);margin-top:2px">'+p.nombre+'</div>'
+      +'<div style="font-size:.75rem;color:var(--muted)">'+p.whatsapp+' · '+(p.fecha||'')+'</div>'
+      +'</div>'
+      +'<div style="text-align:right">'
+      +'<div style="font-size:1rem;font-weight:600">$'+(p.total||0).toLocaleString()+'</div>'
+      +'<span style="font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:'+color+'22;color:'+color+';border-radius:3px">'+p.estado+'</span>'
+      +'</div></div>'
+      +'<div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.5">'+items.map(function(x){return x.nombre+' x'+(x.cant||1);}).join(' · ')+'</div>'
+      +'<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Entrega: '+(p.entrega==='envio'?'Envio a domicilio':'Retiro en salon')+(p.email?' · '+p.email:'')+'</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">';
+
+    if(p.estado==='pendiente'){
+      var btnConf=document.createElement('button');
+      btnConf.textContent='Confirmar';
+      btnConf.style.cssText='background:var(--blk);color:#fff;border:none;padding:7px 14px;font-size:.72rem;cursor:pointer;font-family:var(--sans);border-radius:4px';
+      btnConf.onclick=function(){cambiarEstadoPedido(p.id,'confirmado',p.numero,p.whatsapp,p.total);};
+      var btnCan=document.createElement('button');
+      btnCan.textContent='Cancelar';
+      btnCan.style.cssText='background:none;border:1px solid var(--w4);color:var(--muted);padding:7px 14px;font-size:.72rem;cursor:pointer;font-family:var(--sans);border-radius:4px';
+      btnCan.onclick=function(){cambiarEstadoPedido(p.id,'cancelado',p.numero,p.whatsapp,p.total);};
+      div.appendChild(btnConf);div.appendChild(btnCan);
+    }
+
+    if(p.whatsapp){
+      var msg='Hola '+p.nombre+'! Tu pedido '+p.numero+' fue '+(p.estado==='confirmado'?'confirmado. Procede con la transferencia de $'+(p.total||0).toLocaleString()+' y envianos el comprobante.':'actualizado. Contactanos por cualquier consulta.');
+      var waBtn=document.createElement('a');
+      waBtn.href='https://wa.me/549'+p.whatsapp.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
+      waBtn.target='_blank';
+      waBtn.textContent='WhatsApp';
+      waBtn.style.cssText='background:#25D366;color:#fff;padding:7px 14px;font-size:.72rem;text-decoration:none;border-radius:4px';
+      div.appendChild(waBtn);
+    }
+
+    c.appendChild(div);
+  });
+}
+
+async function cambiarEstadoPedido(id, estado, numero, wa, total){
+  await api('pedidos?id=eq.'+id,{method:'PATCH',body:JSON.stringify({estado:estado})});
+
+  // Notificar Telegram
+  var tgMsg=String.fromCodePoint(128230)+' Pedido '+numero+' - '+estado.toUpperCase()+'\n'
+    +'Total: $'+(total||0).toLocaleString()+'\n'
+    +'WhatsApp: '+wa;
+  fetch('https://script.google.com/macros/s/AKfycbzPo3mqlIrTR-dPtq7qo1hrPSNWRrCgPwNxu0UGwPlco3F1FOiUQr7WiZfVH8EvnrAiVA/exec?action=notificar&mensaje='+encodeURIComponent(tgMsg)).catch(function(){});
+
+  cargarPedidos();
+}
+
+function setPedFiltro(f,btn){
+  pedFiltroActual=f;
+  document.querySelectorAll('#pedFiltros .fb').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  cargarPedidos();
 }
 
 function setFin(f,btn){ finFiltro=f; document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('on');}); btn.classList.add('on'); cargarFin(); }
