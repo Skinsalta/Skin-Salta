@@ -226,26 +226,26 @@ footer a{color:var(--g);text-decoration:none}
 </div>
 
 <!-- MODAL PRODUCTO -->
-<div class="modal-prod" id="modalProd" onclick="if(event.target===this)cerrarModalProd()">
-  <div class="modal-prod-inner">
-    <button class="modal-prod-close" onclick="cerrarModalProd()">&#x2715;</button>
-    <div id="mpImg"></div>
-    <div class="modal-prod-body">
-      <div class="modal-prod-cat" id="mpCat"></div>
-      <div class="modal-prod-nom" id="mpNom"></div>
-      <div class="modal-prod-desc" id="mpDesc"></div>
-      <div class="modal-prod-precio" id="mpPrecio"></div>
-      <div id="mpVarWrap" style="display:none;margin-bottom:14px">
-        <div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:6px;font-weight:600" id="mpVarLabel">Medida</div>
+<div id="modalProd" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);overflow-y:auto">
+  <div style="background:#fff;width:100%;min-height:100%;display:flex;flex-direction:column;position:relative;max-width:520px;margin:0 auto">
+    <button onclick="cerrarModalProd()" style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,.4);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:1.1rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center">&#x2715;</button>
+    <div id="mpImg" style="width:100%;aspect-ratio:1;overflow:hidden;background:var(--w3);flex-shrink:0"></div>
+    <div style="padding:20px;flex:1">
+      <div id="mpCat" style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:6px"></div>
+      <div id="mpNom" style="font-family:var(--serif);font-size:1.4rem;color:var(--text);font-weight:400;line-height:1.2;margin-bottom:8px"></div>
+      <div id="mpDesc" style="font-size:.85rem;color:var(--muted);line-height:1.7;margin-bottom:14px"></div>
+      <div id="mpPrecio" style="font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:16px"></div>
+      <div id="mpVarWrap" style="display:none;margin-bottom:16px">
+        <div id="mpVarLabel" style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:8px;font-weight:600"></div>
         <div id="mpVarOpts" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
-      <div class="modal-prod-cant">
-        <button class="cant-btn" onclick="cambiarCant(-1)">&#8722;</button>
-        <span class="cant-num" id="mpCant">1</span>
-        <button class="cant-btn" onclick="cambiarCant(1)">+</button>
-        <span style="font-size:.78rem;color:var(--muted)" id="mpSubtotal"></span>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <button onclick="cambiarCant(-1)" style="background:var(--w3);border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer">&#8722;</button>
+        <span id="mpCant" style="font-size:1rem;font-weight:600;min-width:24px;text-align:center">1</span>
+        <button onclick="cambiarCant(1)" style="background:var(--w3);border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer">+</button>
+        <span id="mpSubtotal" style="font-size:.78rem;color:var(--muted)"></span>
       </div>
-      <button class="modal-prod-add" onclick="addAlCarrito()">Agregar al carrito</button>
+      <button onclick="addAlCarrito()" style="width:100%;background:var(--blk);color:#fff;border:none;padding:14px;font-family:var(--sans);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px">Agregar al carrito</button>
     </div>
   </div>
 </div>
@@ -398,35 +398,42 @@ function renderGrid(list){
 function abrirModalProd(p){
   prodActual=p;cantActual=1;
   var url=imgUrl(p);
-  document.getElementById('mpImg').innerHTML=url
-    ?'<img class="modal-prod-img" src="'+url+'" alt="'+p.nombre+'" onerror="this.outerHTML=\'<div class=\\\"modal-prod-ph\\\">&#128230;</div>\'">'
-    :'<div class="modal-prod-ph">&#128230;</div>';
+  var mpImg=document.getElementById('mpImg');
+  mpImg.innerHTML='';
+  if(url){
+    var img=document.createElement('img');
+    img.src=url;img.alt=p.nombre;
+    img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';
+    img.onerror=function(){
+      mpImg.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--g2)">&#128230;</div>';
+    };
+    mpImg.appendChild(img);
+  } else {
+    mpImg.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--g2)">&#128230;</div>';
+  }
   document.getElementById('mpCat').textContent=p.categoria||'';
   document.getElementById('mpNom').textContent=p.nombre;
   document.getElementById('mpDesc').textContent=p.descripcion||'';
   document.getElementById('mpPrecio').textContent=fmt(p.precio_venta);
   document.getElementById('mpCant').textContent='1';
   document.getElementById('mpSubtotal').textContent='';
-  // Variantes
   var varWrap=document.getElementById('mpVarWrap');
   var varOpts=document.getElementById('mpVarOpts');
   varOpts.innerHTML='';
   if(p.tiene_variantes&&p.variantes_stock&&Object.keys(p.variantes_stock).length){
     document.getElementById('mpVarLabel').textContent=p.variantes_label||'Medida';
     varWrap.style.display='block';
-    var opts=Object.keys(p.variantes_stock);
-    opts.forEach(function(op){
+    Object.keys(p.variantes_stock).forEach(function(op){
       var stk=p.variantes_stock[op]||0;
-      var btn=document.createElement('button');
       var agotada=stk<=0;
-      btn.innerHTML=op+(agotada?'<br><span style="font-size:.6rem;color:#c0392b">Agotado</span>':'<br><span style="font-size:.6rem;color:#888">Stock: '+stk+'</span>');
-      btn.style.cssText='padding:8px 14px;border:1px solid var(--w4);background:'+(agotada?'var(--w3)':'var(--w)')+';font-family:var(--sans);font-size:.78rem;cursor:'+(agotada?'not-allowed':'pointer')+';border-radius:4px;transition:all .15s;text-align:center;line-height:1.3';
+      var btn=document.createElement('button');
+      btn.style.cssText='padding:8px 16px;border:1px solid var(--w4);background:'+(agotada?'var(--w3)':'var(--w)')+';font-family:var(--sans);font-size:.82rem;cursor:'+(agotada?'not-allowed':'pointer')+';border-radius:4px;opacity:'+(agotada?'.5':'1');
+      btn.innerHTML=op+'<br><span style="font-size:.65rem;color:'+(agotada?'#c0392b':'#888')+'">'+(agotada?'Agotado':'Stock: '+stk)+'</span>';
       if(!agotada){
         btn.onclick=function(){
           varOpts.querySelectorAll('button').forEach(function(b){b.style.background='var(--w)';b.style.borderColor='var(--w4)';b.style.color='var(--text)';});
           btn.style.background='var(--blk)';btn.style.borderColor='var(--blk)';btn.style.color='#fff';
-          prodActual._varSelec=op;
-          prodActual._varStock=stk;
+          prodActual._varSelec=op;prodActual._varStock=stk;
         };
       }
       varOpts.appendChild(btn);
@@ -435,12 +442,12 @@ function abrirModalProd(p){
     varWrap.style.display='none';
     if(prodActual) prodActual._varSelec=null;
   }
-  document.getElementById('modalProd').classList.add('show');
+  document.getElementById('modalProd').style.display='block';
   document.body.style.overflow='hidden';
 }
 
 function cerrarModalProd(){
-  document.getElementById('modalProd').classList.remove('show');
+  document.getElementById('modalProd').style.display='none';
   document.body.style.overflow='';
 }
 
@@ -622,35 +629,121 @@ function actualizarBadge(){
   if(b2){b2.textContent=total;b2.style.display=total>0?'flex':'none';}
 }
 
-function abrirMiCuenta(){
-  var pedidos=JSON.parse(localStorage.getItem('ss_pedidos')||'[]');
-  var c=document.getElementById('cuentaContent');
-  if(!pedidos.length){
-    c.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--muted)">'
-      +'<div style="font-size:2rem;margin-bottom:10px">&#128230;</div>'
-      +'<div style="font-size:.9rem;margin-bottom:16px">Todavia no tenes pedidos</div>'
-      +'<a href="tienda.html" style="background:var(--blk);color:#fff;padding:10px 24px;text-decoration:none;font-size:.75rem;font-weight:600;border-radius:4px">Ver productos</a>'
-      +'</div>';
-  } else {
-    var html='<div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:14px;font-weight:600">Tus pedidos</div>';
-    pedidos.reverse().forEach(function(p){
-      html+='<div style="background:var(--w3);padding:14px;margin-bottom:10px;border-radius:6px">'
-        +'<div style="display:flex;justify-content:space-between;margin-bottom:6px">'
-        +'<span style="font-size:.8rem;font-weight:600;color:var(--g)">'+p.numero+'</span>'
-        +'<span style="font-size:.72rem;color:var(--muted)">'+p.fecha+'</span>'
-        +'</div>'
-        +'<div style="font-size:.82rem;color:var(--text);margin-bottom:4px">'+p.nombre+'</div>'
-        +'<div style="font-size:.78rem;color:var(--muted);margin-bottom:8px">'+p.items.map(function(x){return x.nombre+' x'+x.cant;}).join(', ')+'</div>'
-        +'<div style="display:flex;justify-content:space-between;align-items:center">'
-        +'<span style="font-size:.9rem;font-weight:600">'+fmt(p.total)+'</span>'
-        +'<button onclick="repetirPedido('+JSON.stringify(p.items).replace(/'/g,"&#39;")+',this)" style="background:var(--blk);color:#fff;border:none;padding:7px 14px;font-size:.72rem;cursor:pointer;font-family:var(--sans);border-radius:4px">Repetir</button>'
-        +'</div></div>';
-    });
-    c.innerHTML=html;
-  }
+var usuarioTienda=JSON.parse(localStorage.getItem('ss_usuario_tienda')||'null');
+
+async function abrirMiCuenta(){
   document.getElementById('cuentaDrawer').classList.add('open');
   document.getElementById('cuentaOverlay').classList.add('show');
   document.body.style.overflow='hidden';
+  if(usuarioTienda) renderCuentaLogueada();
+  else renderCuentaLogin();
+}
+
+function renderCuentaLogin(){
+  var c=document.getElementById('cuentaContent');
+  c.innerHTML='<div style="padding:8px 0">'
+    +'<div style="font-family:var(--serif);font-size:1.3rem;margin-bottom:6px">Mi cuenta</div>'
+    +'<div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6">Ingresa para ver tus pedidos y datos</div>'
+    +'<div style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:5px;font-weight:600">DNI</div>'
+    +'<input id="loginDniT" type="number" inputmode="numeric" placeholder="Sin puntos" style="width:100%;padding:11px 14px;border:1px solid var(--w4);background:var(--w2);font-family:var(--sans);font-size:16px;outline:none;border-radius:4px;margin-bottom:10px">'
+    +'<div style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:5px;font-weight:600">Contrasena</div>'
+    +'<input id="loginPassT" type="password" placeholder="Tu contrasena (o tu DNI si es la primera vez)" style="width:100%;padding:11px 14px;border:1px solid var(--w4);background:var(--w2);font-family:var(--sans);font-size:16px;outline:none;border-radius:4px;margin-bottom:6px">'
+    +'<div id="loginErrT" style="font-size:.78rem;color:#c0392b;margin-bottom:10px;display:none">DNI o contrasena incorrectos</div>'
+    +'<button onclick="doLoginTienda()" style="width:100%;background:var(--blk);color:#fff;border:none;padding:13px;font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-bottom:12px">Ingresar</button>'
+    +'<div style="text-align:center;font-size:.78rem;color:var(--muted)">No tenes cuenta? <a href="clientas.html" style="color:var(--g)">Crear una</a></div>'
+    +'</div>';
+}
+
+async function doLoginTienda(){
+  var dni=document.getElementById('loginDniT').value.trim();
+  var pass=document.getElementById('loginPassT').value.trim();
+  var err=document.getElementById('loginErrT');
+  err.style.display='none';
+  if(!dni){err.textContent='Ingresa tu DNI';err.style.display='block';return;}
+  var r=await fetch(SU+'/rest/v1/usuarios?dni=eq.'+encodeURIComponent(dni)+'&select=*&limit=1',{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
+  var data=await r.json();
+  if(!data||!data.length){err.textContent='No encontramos una cuenta con ese DNI';err.style.display='block';return;}
+  var u=data[0];
+  if(pass&&pass!==u.password_hash&&pass!==dni){err.textContent='Contrasena incorrecta';err.style.display='block';return;}
+  usuarioTienda=u;
+  localStorage.setItem('ss_usuario_tienda',JSON.stringify(u));
+  renderCuentaLogueada();
+}
+
+async function renderCuentaLogueada(){
+  var u=usuarioTienda;
+  var c=document.getElementById('cuentaContent');
+
+  // Cargar pedidos de Supabase
+  var pedidosDB=[];
+  try{
+    var r=await fetch(SU+'/rest/v1/pedidos?whatsapp=eq.'+encodeURIComponent(u.telefono||'')+'&order=created_at.desc&limit=20',{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
+    pedidosDB=await r.json()||[];
+  }catch(e){}
+
+  // Combinar con pedidos locales
+  var pedidosLocal=JSON.parse(localStorage.getItem('ss_pedidos')||'[]');
+  var nivel=u.visitas>=35?'VIP':u.visitas>=20?'Diamante':u.visitas>=10?'Oro':u.visitas>=5?'Plata':'Bronce';
+
+  var html='<div style="background:var(--blk);padding:16px;margin:-16px -16px 16px;color:#fff">'
+    +'<div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:4px">Bienvenida</div>'
+    +'<div style="font-family:var(--serif);font-size:1.2rem;margin-bottom:4px">'+u.nombre+' '+(u.apellido||'')+'</div>'
+    +'<div style="font-size:.75rem;color:rgba(255,255,255,.5)">'+nivel+' · '+(u.visitas||0)+' visitas</div>'
+    +'<div style="display:flex;justify-content:flex-end;margin-top:8px">'
+    +'<button onclick="cerrarSesionTienda()" style="background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:4px 12px;font-family:var(--sans);font-size:.65rem;cursor:pointer;border-radius:4px">Salir</button>'
+    +'</div></div>';
+
+  html+='<div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:12px;font-weight:600">Mis pedidos</div>';
+
+  var todosPedidos=pedidosDB.length?pedidosDB:pedidosLocal;
+
+  if(!todosPedidos.length){
+    html+='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.88rem">Todavia no realizaste pedidos</div>';
+  } else {
+    todosPedidos.forEach(function(p){
+      var items=typeof p.items==='string'?JSON.parse(p.items||'[]'):p.items||[];
+      html+='<div style="background:var(--w3);padding:14px;margin-bottom:10px;border-radius:6px">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:6px">'
+        +'<span style="font-size:.8rem;font-weight:600;color:var(--g)">'+p.numero+'</span>'
+        +'<span style="font-size:.68rem;padding:2px 8px;background:'+(p.estado==='confirmado'?'#e8f5e9':'#fff8e1')+';color:'+(p.estado==='confirmado'?'#2d7a2d':'#b8956a')+';border-radius:10px">'+( p.estado||'pendiente')+'</span>'
+        +'</div>'
+        +'<div style="font-size:.78rem;color:var(--muted);margin-bottom:8px">'+items.map(function(x){return x.nombre+' x'+(x.cant||1);}).join(', ')+'</div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center">'
+        +'<span style="font-size:.9rem;font-weight:600">'+fmt(p.total)+'</span>';
+      if(items.length){
+        html+='<button onclick='repetirPedidoArray('+JSON.stringify(items)+',this)' style="background:var(--blk);color:#fff;border:none;padding:7px 14px;font-size:.72rem;cursor:pointer;font-family:var(--sans);border-radius:4px">Repetir</button>';
+      }
+      html+='</div></div>';
+    });
+  }
+
+  // Datos de la cuenta
+  html+='<div style="margin-top:16px;border-top:1px solid var(--w4);padding-top:16px">'
+    +'<div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--g);margin-bottom:10px;font-weight:600">Mis datos</div>'
+    +'<div style="font-size:.82rem;color:var(--muted);line-height:2">DNI: <strong style="color:var(--text)">'+u.dni+'</strong><br>'
+    +'Tel: <strong style="color:var(--text)">'+(u.telefono||'No cargado')+'</strong><br>'
+    +'Email: <strong style="color:var(--text)">'+(u.email||'No cargado')+'</strong></div>'
+    +'</div>';
+
+  c.innerHTML=html;
+}
+
+function cerrarSesionTienda(){
+  usuarioTienda=null;
+  localStorage.removeItem('ss_usuario_tienda');
+  renderCuentaLogin();
+}
+
+function repetirPedidoArray(items, btn){
+  items.forEach(function(item){
+    var clave=item.clave||item.id;
+    var idx=carrito.findIndex(function(x){return x.clave===clave;});
+    if(idx>=0) carrito[idx].cant+=(item.cant||1);
+    else carrito.push(item);
+  });
+  guardarCarrito();actualizarBadge();
+  btn.textContent='Agregado!';btn.style.background='var(--g)';btn.style.color='#000';
+  setTimeout(function(){cerrarMiCuenta();abrirCarrito();},600);
 }
 
 function cerrarMiCuenta(){
@@ -659,16 +752,7 @@ function cerrarMiCuenta(){
   document.body.style.overflow='';
 }
 
-function repetirPedido(items, btn){
-  items.forEach(function(item){
-    var idx=carrito.findIndex(function(x){return x.clave===(item.clave||item.id);});
-    if(idx>=0) carrito[idx].cant+=item.cant;
-    else carrito.push(item);
-  });
-  guardarCarrito();actualizarBadge();
-  btn.textContent='Agregado!';btn.style.background='var(--g)';btn.style.color='#000';
-  setTimeout(function(){cerrarMiCuenta();abrirCarrito();},600);
-}
+
 
 actualizarBadge();
 cargar();
