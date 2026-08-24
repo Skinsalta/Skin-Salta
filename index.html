@@ -249,6 +249,7 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
   <div class="hero-btns">
     <a href="#agenda" class="btn-hero-dark">Reservar turno</a>
     <a href="#servicios" class="btn-hero-outline">Ver servicios</a>
+    <a href="tienda.html" class="btn-hero-outline" style="border-color:var(--g);color:var(--g)">Tienda de insumos</a>
   </div>
   <div class="hero-stats">
     <div><div class="stat-n">500+</div><div class="stat-l">Clientas felices</div></div>
@@ -358,7 +359,8 @@ footer{background:var(--blk);color:rgba(255,255,255,.5);padding:3.5rem 1.5rem 2r
               </optgroup>
             </select>
           </div>
-          <div class="fi"><label>Fecha</label><input type="date" name="fecha" required></div>
+          <div class="fi"><label>Fecha del turno</label><input type="date" name="fecha" required></div>
+          <div class="fi"><label>Fecha de cumpleaños</label><input type="date" name="cumpleanos" placeholder="Opcional"></div>
           <div class="fi"><label>Horario</label>
             <select name="hora" required>
               <option value="">Elegí un horario...</option>
@@ -567,6 +569,7 @@ document.getElementById('formAgenda').addEventListener('submit',async function(e
       email=fd.get('email')||'',servicio=fd.get('servicio'),fecha=fd.get('fecha'),
       hora=fd.get('hora'),notas=fd.get('notas')||'';
 
+  var cumpleanos=fd.get('cumpleanos')||'';
   var params=new URLSearchParams({action:'guardar',nombre:nombre,apellido:apellido,whatsapp:whatsapp,email:email,servicio:servicio,fecha:fecha,hora:hora,notas:notas});
 
   try{
@@ -578,7 +581,7 @@ document.getElementById('formAgenda').addEventListener('submit',async function(e
       msg.className='err';
       msg.style.display='block';
     } else {
-      await guardarEnSupabase({nombre:nombre,apellido:apellido,whatsapp:whatsapp,email:email,servicio:servicio,fecha:fecha,hora:hora,notas:notas},json.id||('web'+Date.now()));
+      await guardarEnSupabase({nombre:nombre,apellido:apellido,whatsapp:whatsapp,email:email,servicio:servicio,fecha:fecha,hora:hora,notas:notas,cumpleanos:cumpleanos},json.id||('web'+Date.now()));
       this.reset();
       // Popup de confirmacion
       var waUrl='https://wa.me/543872246068?text='+encodeURIComponent('Hola! Acabo de solicitar un turno para '+servicio+' el '+fecha+' a las '+hora+' hs. Quedo esperando confirmacion!');
