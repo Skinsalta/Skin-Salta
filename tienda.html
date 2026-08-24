@@ -400,7 +400,7 @@ function renderCats(){
 
 function filtrar(){
   var lista=todos;
-  if(catActual!=='Todos') lista=lista.filter(function(p){return p.categoria_principal===catActual||p.categoria===catActual;});
+  if(catActual!=='Todos') lista=lista.filter(function(p){return (p.categoria_principal||'').toLowerCase()===catActual.toLowerCase();});
   if(busqActual) lista=lista.filter(function(p){return(p.nombre+' '+(p.descripcion||'')+(p.categoria||'')).toLowerCase().includes(busqActual.toLowerCase());});
   document.getElementById('resBar').textContent=lista.length+' producto'+(lista.length!==1?'s':'');
   renderGrid(lista);
