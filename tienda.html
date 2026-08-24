@@ -377,7 +377,7 @@ function toast(msg){
 // CARGAR
 async function cargar(){
   try{
-    var r=await fetch(SU+'/rest/v1/productos?activo=eq.true&select=*&order=categoria.asc,nombre.asc',{
+    var r=await fetch(SU+'/rest/v1/productos?activo=eq.true&select=*&order=categoria_principal.asc,categoria.asc,nombre.asc',{
       headers:{'apikey':SK,'Authorization':'Bearer '+SK}
     });
     todos=await r.json()||[];
@@ -389,8 +389,7 @@ async function cargar(){
 }
 
 function renderCats(){
-  var cats=['Todos'];
-  todos.forEach(function(p){if(p.categoria&&!cats.includes(p.categoria))cats.push(p.categoria);});
+  var cats=['Todos','Pestanas','Facial'];
   var w=document.getElementById('catsInner');w.innerHTML='';
   cats.forEach(function(cat){
     var b=document.createElement('button');b.className='cat-pill'+(cat===catActual?' on':'');b.textContent=cat;
@@ -401,7 +400,7 @@ function renderCats(){
 
 function filtrar(){
   var lista=todos;
-  if(catActual!=='Todos') lista=lista.filter(function(p){return p.categoria===catActual;});
+  if(catActual!=='Todos') lista=lista.filter(function(p){return p.categoria_principal===catActual||p.categoria===catActual;});
   if(busqActual) lista=lista.filter(function(p){return(p.nombre+' '+(p.descripcion||'')+(p.categoria||'')).toLowerCase().includes(busqActual.toLowerCase());});
   document.getElementById('resBar').textContent=lista.length+' producto'+(lista.length!==1?'s':'');
   renderGrid(lista);
