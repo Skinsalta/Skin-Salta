@@ -163,14 +163,18 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
   .cards{gap:8px;flex-wrap:wrap}
   .card{min-width:calc(50% - 4px);flex:none}
   .grid2{grid-template-columns:1fr}
-  .modal-box{padding:20px;margin:8px}
+  .modal-box{padding:16px;margin:4px;max-width:100%!important;width:calc(100% - 8px)}
   .modal-t{font-size:1.1rem}
+  .modal-box input,.modal-box select,.modal-box textarea{font-size:16px!important}
+  .modal-box .grid2,.modal-box [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  .modal-box [style*="grid-column:span 2"]{grid-column:span 1!important}
   .btn-p{padding:10px 16px;font-size:.72rem}
   .tc{flex-direction:column}
   .tc-ac{width:100%;height:3px}
   .tc-b{padding:12px}
-  .list-row{flex-direction:column;align-items:flex-start;gap:8px}
-  .list-acts{width:100%;justify-content:flex-end}
+  .list-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .list-acts{width:100%;justify-content:flex-end;flex-wrap:wrap;gap:4px}
+  .list-det{font-size:.72rem}
   .fin-row{flex-wrap:wrap;gap:4px}
   input[type=number]{font-size:16px}
 }
@@ -178,6 +182,7 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
   .card{min-width:100%}
   .pg-h{flex-direction:column;gap:8px}
   .pg-h .btn-p{width:100%;text-align:center}
+  .calc-grid{grid-template-columns:1fr 1fr!important}
 }
 </style>
 </head>
@@ -407,11 +412,15 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
     <div class="modal-t" id="mProdTitulo">Nuevo producto</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:4px">
       <div class="fg" style="grid-column:span 2"><label class="fl">Nombre *</label><input class="fi" id="prNom" placeholder="Nombre del producto"></div>
-      <div class="fg"><label class="fl">Categoria</label>
-      <input class="fi" id="prCat" placeholder="Ej: Fibras, Adhesivos" list="catSugg">
+      <div class="fg"><label class="fl">Subcategoria</label>
+      <input class="fi" id="prCat" placeholder="Ej: Fibras, Adhesivos" list="catSugg" style="font-size:16px">
       <datalist id="catSugg">
-        <option value="Pestanas">
-        <option value="Facial">
+        <option value="Fibras">
+        <option value="Adhesivos">
+        <option value="Removedores">
+        <option value="Accesorios">
+        <option value="Serums y Tratamientos">
+        <option value="Cuidado Facial">
         <option value="Kits y Sets">
         <option value="Accesorios">
       </datalist>
@@ -419,7 +428,7 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
       <div class="fg"><label class="fl">Costo $</label><input type="number" class="fi" id="prCosto" placeholder="0" oninput="calcVenta()"></div>
       <div class="fg" style="grid-column:span 2">
       <label class="fl">Calculadora de precio de venta</label>
-      <div style="background:var(--w3);padding:14px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:end">
+      <div style="background:var(--w3);padding:14px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:end" class="calc-grid">
         <div>
           <div style="font-size:.6rem;color:var(--muted);margin-bottom:4px">Costo $</div>
           <input type="number" class="fi" id="prCosto" placeholder="0" style="background:#fff" oninput="calcPrecio()">
@@ -441,6 +450,13 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
       <div class="fg"><label class="fl">Stock minimo</label><input type="number" class="fi" id="prMin" placeholder="0"></div>
     </div>
     <div class="fg"><label class="fl">Descripcion (aparece en la tienda)</label><textarea class="fi" id="prDesc" rows="2" placeholder="Descripcion breve del producto..."></textarea></div>
+    <div class="fg"><label class="fl">Categoria principal</label>
+      <select class="fi" id="prCatPrincipal" style="font-size:16px">
+        <option value="">Seleccionar...</option>
+        <option value="Pestanas">Pestanas</option>
+        <option value="Facial">Facial</option>
+      </select>
+    </div>
     <div class="fg"><label class="fl">Visible en tienda online</label>
       <select class="fs" id="prTienda">
         <option value="si">Si, mostrar en tienda</option>
@@ -458,9 +474,9 @@ html,body{height:100%;background:var(--w2);font-family:var(--sans);font-weight:3
         </div>
         <div style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600">Agregar opciones con stock</div>
         <div style="display:flex;gap:8px;margin-bottom:10px">
-          <input class="fi" id="prVarNuevaOp" placeholder="Ej: 8mm" style="flex:1;background:#fff">
-          <input class="fi" id="prVarNuevoStock" type="number" placeholder="Stock" style="width:80px;background:#fff" value="0">
-          <button onclick="agregarVarianteRow()" style="background:var(--gold);color:#000;border:none;padding:8px 14px;cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:600;border-radius:4px;white-space:nowrap">+ Agregar</button>
+          <input class="fi" id="prVarNuevaOp" placeholder="Ej: 8mm" style="flex:1;background:#fff;min-width:0">
+          <input class="fi" id="prVarNuevoStock" type="number" placeholder="Stock" style="width:70px;background:#fff" value="0">
+          <button onclick="agregarVarianteRow()" style="background:var(--gold);color:#000;border:none;padding:8px 12px;cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:600;border-radius:4px;white-space:nowrap;flex-shrink:0">+</button>
         </div>
         <div id="prVarRows" style="display:flex;flex-direction:column;gap:6px"></div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:8px">Cada variante tiene su propio stock. El stock general del producto se ignora.</div>
@@ -974,6 +990,7 @@ async function guardarProd(){
     stock_actual:parseInt(document.getElementById('prStock').value)||0,
     stock_minimo:parseInt(document.getElementById('prMin').value)||0,
     tienda_categoria:document.getElementById('prTienda').value||null,
+    categoria_principal:document.getElementById('prCatPrincipal').value||null,
     tiene_variantes:document.getElementById('prTieneVar').checked,
     variantes_label:document.getElementById('prVarLabel').value||'Medida',
     variantes_stock:document.getElementById('prTieneVar').checked&&Object.keys(variantesActuales).length?variantesActuales:null,
@@ -1013,6 +1030,7 @@ function editarProd(p){
   document.getElementById('prStock').value=p.stock_actual||0;
   document.getElementById('prMin').value=p.stock_minimo||0;
   document.getElementById('prTienda').value=p.tienda_categoria||'';
+  document.getElementById('prCatPrincipal').value=p.categoria_principal||'';
   // Foto preview
   if(p.foto_url){
     document.getElementById('prFotoPreview').innerHTML='<img src="'+SU+'/storage/v1/object/public/productos/'+p.foto_url+'" style="width:80px;height:80px;object-fit:cover;border:1px solid var(--w4);border-radius:4px"> <span style="font-size:.75rem;color:var(--muted)">Foto actual (subir nueva para cambiar)</span>';
