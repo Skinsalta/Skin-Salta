@@ -671,6 +671,10 @@ function renderRegistroTienda(){
     +'<input id="regPassT" type="password" placeholder="Minimo 6 caracteres" class="co-inp">'
     +'<label class="co-label">WhatsApp</label>'
     +'<input id="regWaT" type="tel" placeholder="3874123456" class="co-inp">'
+    +'<label class="co-label">Contrasena *</label>'
+    +'<input id="regPassT2" type="password" placeholder="Minimo 6 caracteres" class="co-inp">'
+    +'<label class="co-label">Repetir contrasena *</label>'
+    +'<input id="regPassT3" type="password" placeholder="Repetir contrasena" class="co-inp">'
     +'<div id="regErrT" class="login-err"></div>'
     +'<button onclick="doRegistroTienda()" style="width:100%;background:var(--blk);color:#fff;border:none;padding:13px;font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:10px">Crear cuenta</button>'
     +'<button onclick="renderLoginCuenta()" style="width:100%;background:none;border:1px solid var(--w4);padding:11px;font-family:var(--sans);font-size:.78rem;color:var(--muted);cursor:pointer;border-radius:4px">Volver al login</button>'
@@ -708,9 +712,13 @@ async function doRegistroTienda(){
   var email=document.getElementById('regEmailT').value.trim();
   var pass=document.getElementById('regPassT').value;
   var wa=document.getElementById('regWaT').value.trim();
+  var pass2=document.getElementById('regPassT2')?document.getElementById('regPassT2').value:'';
+  var pass3=document.getElementById('regPassT3')?document.getElementById('regPassT3').value:'';
+  if(pass2) pass=pass2;
   var err=document.getElementById('regErrT');err.style.display='none';
   if(!nom||!email||!pass){err.textContent='Nombre, email y contrasena son obligatorios';err.style.display='block';return;}
   if(pass.length<6){err.textContent='La contrasena debe tener al menos 6 caracteres';err.style.display='block';return;}
+  if(pass2&&pass3&&pass2!==pass3){err.textContent='Las contrasenas no coinciden';err.style.display='block';return;}
   try{
     // Crear usuario en Auth
     var r=await fetch(SU+'/auth/v1/signup',{
